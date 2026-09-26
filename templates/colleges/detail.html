@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ college.name }} - Events, Hackathons & Campus Hub | CampusConnect{% endblock %}
+{% block meta_description %}Explore upcoming hackathons, technical symposiums, workshops, and cultural fests hosted by {{ college.name }} in {{ college.city }}, {{ college.state }}.{% endblock %}
+
+{% block content %}
+<!-- Luminous Vibrant Campus Cover Banner -->
+<section class="college-hero-cover text-white position-relative">
+  <div class="container position-relative" style="z-index: 2;">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb mb-0 small" style="--bs-breadcrumb-divider-color: rgba(255,255,255,0.7);">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white-50 text-decoration-none"><i class="bi bi-house-door-fill me-1"></i> Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'events_discovery' %}" class="text-white-50 text-decoration-none">Institutions</a></li>
+        <li class="breadcrumb-item active text-white fw-semibold" aria-current="page">{{ college.name|truncatechars:35 }}</li>
+      </ol>
+    </nav>
+
+    <div class="row align-items-center g-4">
+      <!-- College Logo Box -->
+      <div class="col-auto">
+        <div class="college-logo-box">
+          <img src="{{ college.display_logo }}" alt="{{ college.name }}">
+        </div>
+      </div>
+
+      <!-- College Header Details -->
+      <div class="col-lg">
+        <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+          <span class="badge bg-white text-dark rounded-pill fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center gap-1.5">
+            <span class="pulse-dot"></span>
+            Verified Institution
+          </span>
+          <span class="badge bg-white-10 text-white rounded-pill border border-white-25 px-3 py-1.5 backdrop-blur">
+            <i class="bi bi-award-fill text-warning me-1"></i> Academic Partner
+          </span>
+          <span class="badge bg-white-10 text-white rounded-pill border border-white-25 px-3 py-1.5 backdrop-blur">
+            <i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ college.city }}, {{ college.state }}
+          </span>
+        </div>
+
+        <h1 class="display-6 fw-bold mb-2 text-white tracking-tight">{{ college.name }}</h1>
+
+        <p class="text-white-80 small mb-3 mb-md-0" style="max-width: 720px; line-height: 1.6;">
+          {{ college.description|truncatewords:28 }}
+        </p>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="col-lg-auto text-lg-end d-flex flex-column flex-sm-row flex-lg-column gap-2">
+        {% if can_manage %}
+          <a href="{% url 'event_create' %}" class="btn btn-light fw-bold rounded-pill px-4 py-2 shadow-sm text-primary">
+            <i class="bi bi-plus-circle-fill me-1 text-primary"></i> Publish New Event
+          </a>
+        {% endif %}
+
+        {% if college.website %}
+          <a href="{{ college.website }}" target="_blank" rel="noopener" class="btn btn-outline-light rounded-pill px-4 py-2 fw-semibold">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Official Website
+          </a>
+        {% endif %}
+
+        <button type="button" class="btn btn-white-20 text-white rounded-pill px-4 py-2 fw-semibold border border-white-30" onclick="copyToClipboard(window.location.href, 'College profile link copied to clipboard!')">
+          <i class="bi bi-share-fill me-1"></i> Share Profile
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bright Highlight Metrics Row -->
+<div class="container mt-n4 position-relative" style="z-index: 3;">
+  <div class="row g-3">
+    <!-- Stat 1 -->
+    <div class="col-6 col-lg-3">
+      <div class="stat-card-bright" style="--stat-accent: linear-gradient(135deg, #6366f1, #8b5cf6);">
+        <div class="d-flex align-items-center gap-3">
+          <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-3" style="width: 48px; height: 48px; font-size: 1.4rem;">
+            <i class="bi bi-calendar2-week-fill"></i>
+          </div>
+          <div>
+            <div class="h3 fw-bold mb-0 text-white">{{ upcoming_events.count }}</div>
+            <div class="small text-muted fw-semibold text-uppercase" style="font-size: 0.72rem;">Active Upcoming</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat 2 -->
+    <div class="col-6 col-lg-3">
+      <div class="stat-card-bright" style="--stat-accent: linear-gradient(135deg, #10b981, #059669);">
+        <div class="d-flex align-items-center gap-3">
+          <div class="d-inline-flex align-items-center justify-content-center bg-success-subtle text-success rounded-3" style="width: 48px; height: 48px; font-size: 1.4rem;">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div>
+            <div class="h3 fw-bold mb-0 text-white">{{ total_registrations }}</div>
+            <div class="small text-muted fw-semibold text-uppercase" style="font-size: 0.72rem;">Registrations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat 3 -->
+    <div class="col-6 col-lg-3">
+      <div class="stat-card-bright" style="--stat-accent: linear-gradient(135deg, #f59e0b, #d97706);">
+        <div class="d-flex align-items-center gap-3">
+          <div class="d-inline-flex align-items-center justify-content-center bg-warning-subtle text-warning rounded-3" style="width: 48px; height: 48px; font-size: 1.4rem;">
+            <i class="bi bi-building-fill-check"></i>
+          </div>
+          <div>
+            <div class="h3 fw-bold mb-0 text-white">{{ total_events }}</div>
+            <div class="small text-muted fw-semibold text-uppercase" style="font-size: 0.72rem;">Total Events Hosted</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat 4 -->
+    <div class="col-6 col-lg-3">
+      <div class="stat-card-bright" style="--stat-accent: linear-gradient(135deg, #0ea5e9, #0284c7);">
+        <div class="d-flex align-items-center gap-3">
+          <div class="d-inline-flex align-items-center justify-content-center bg-info-subtle text-info rounded-3" style="width: 48px; height: 48px; font-size: 1.4rem;">
+            <i class="bi bi-tags-fill"></i>
+          </div>
+          <div>
+            <div class="h3 fw-bold mb-0 text-white">{{ categories_hosted|length|default:"5" }}+</div>
+            <div class="small text-muted fw-semibold text-uppercase" style="font-size: 0.72rem;">Domains & Categories</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="container py-5">
+  <div class="row g-4">
+    <!-- Left Column: Institution Overview & Campus Amenities -->
+    <div class="col-lg-4">
+      <!-- About Card -->
+      <div class="card rounded-4 p-4 mb-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <h5 class="fw-bold mb-3 d-flex align-items-center gap-2 text-white">
+          <i class="bi bi-mortarboard text-primary"></i> About the Institution
+        </h5>
+        <p class="small mb-4" style="line-height: 1.8; color: var(--text-body);">
+          {{ college.description }}
+        </p>
+
+        <h6 class="fw-bold small text-uppercase text-muted mb-2">Campus Highlights</h6>
+        <div class="d-flex flex-column gap-2 small mb-4">
+          <div class="d-flex align-items-center gap-2" style="color: var(--text-body);">
+            <i class="bi bi-check2-circle text-success fs-6"></i>
+            <span>Inter-Collegiate Host Center</span>
+          </div>
+          <div class="d-flex align-items-center gap-2" style="color: var(--text-body);">
+            <i class="bi bi-check2-circle text-success fs-6"></i>
+            <span>Digital QR Check-in System</span>
+          </div>
+          <div class="d-flex align-items-center gap-2" style="color: var(--text-body);">
+            <i class="bi bi-check2-circle text-success fs-6"></i>
+            <span>High-Speed Wi-Fi & Seminar Auditoriums</span>
+          </div>
+          <div class="d-flex align-items-center gap-2" style="color: var(--text-body);">
+            <i class="bi bi-check2-circle text-success fs-6"></i>
+            <span>All-India Student Participation Friendly</span>
+          </div>
+        </div>
+
+        {% if college.website %}
+          <a href="{{ college.website }}" target="_blank" rel="noopener" class="btn btn-outline-custom btn-sm w-100 py-2">
+            <i class="bi bi-globe me-1"></i> Visit Official Campus Website
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Campus Location Card -->
+      <div class="card rounded-4 p-4 mb-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <h6 class="fw-bold mb-3 d-flex align-items-center gap-2 text-white">
+          <i class="bi bi-geo-alt-fill text-danger"></i> Campus Headquarters
+        </h6>
+        <div class="fw-semibold text-white mb-1">{{ college.name }}</div>
+        <div class="small text-muted mb-3">{{ college.address }}, {{ college.city }}, {{ college.state }}, India</div>
+
+        <div class="p-3 rounded-3 text-center border mb-3" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+          <i class="bi bi-map-fill fs-3 text-primary mb-1 d-block"></i>
+          <span class="small text-muted">Navigate to campus grounds</span>
+          <div class="mt-2">
+            <a href="https://maps.google.com/?q={{ college.name|urlencode }}+{{ college.city|urlencode }}" target="_blank" rel="noopener" class="btn btn-sm btn-primary-gradient rounded-pill px-3">
+              Open in Google Maps <i class="bi bi-box-arrow-up-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Share Profile Card -->
+      <div class="card rounded-4 p-4 text-center" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <h6 class="fw-bold mb-2 text-white">Share College Events</h6>
+        <p class="small text-muted mb-3">Send this college's upcoming event schedule to your peers and student clubs!</p>
+        <div class="d-flex justify-content-center gap-2">
+          <button class="btn btn-light border rounded-circle" style="width: 44px; height: 44px;" onclick="copyToClipboard(window.location.href, 'College link copied!')" data-bs-toggle="tooltip" title="Copy Link">
+            <i class="bi bi-link-45deg fs-5 text-white"></i>
+          </button>
+          <a href="https://api.whatsapp.com/send?text=Explore%20events%20at%20{{ college.name|urlencode }}%20on%20CampusConnect:%20{{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" class="btn btn-light border rounded-circle" style="width: 44px; height: 44px;" data-bs-toggle="tooltip" title="Share on WhatsApp">
+            <i class="bi bi-whatsapp fs-5 text-success"></i>
+          </a>
+          <a href="https://twitter.com/intent/tweet?text=Discover%20events%20at%20{{ college.name|urlencode }}%20on%20CampusConnect&url={{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener" class="btn btn-light border rounded-circle" style="width: 44px; height: 44px;" data-bs-toggle="tooltip" title="Share on X">
+            <i class="bi bi-twitter-x fs-5 text-white"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Search & Event Listings -->
+    <div class="col-lg-8">
+      <!-- Search & Category Filter Header -->
+      <div class="card rounded-4 p-3.5 mb-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <div class="row g-2 align-items-center mb-3">
+          <div class="col-md-7">
+            <div class="input-group">
+              <span class="input-group-text border-0" style="background: var(--bg-surface);"><i class="bi bi-search text-muted"></i></span>
+              <input type="text" id="collegeEventSearch" class="form-control border-0 shadow-none text-white" style="background: var(--bg-surface);" placeholder="Search events at {{ college.name }}..." onkeyup="filterCollegeEvents()">
+            </div>
+          </div>
+          <div class="col-md-5 text-md-end">
+            <span class="small text-muted">Showing <strong id="visibleEventCount" class="text-white">{{ upcoming_events.count }}</strong> events</span>
+          </div>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="d-flex align-items-center gap-1.5 flex-wrap" id="collegeCategoryFilters">
+          <span class="category-filter-chip active" onclick="filterByCategory('ALL', this)">All Categories</span>
+          {% for cat in categories_hosted %}
+            <span class="category-filter-chip" onclick="filterByCategory('{{ cat }}', this)">{{ cat }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Segmented Tabs -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <ul class="nav nav-pills nav-pills-bright gap-2" id="collegeEventTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="upcoming-tab" data-bs-toggle="pill" data-bs-target="#upcoming" type="button" role="tab">
+              <i class="bi bi-rocket-takeoff-fill me-1.5 text-warning"></i> Upcoming Events ({{ upcoming_events.count }})
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="past-tab" data-bs-toggle="pill" data-bs-target="#past" type="button" role="tab">
+              <i class="bi bi-archive-fill me-1.5"></i> Past Events Archive ({{ past_events.count }})
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tab-content" id="collegeEventTabContent">
+        <!-- Upcoming Events Tab -->
+        <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
+          <div class="row g-4" id="upcomingEventsGrid">
+            {% for event in upcoming_events %}
+              <div class="col-md-6 event-item-card" data-category="{{ event.category }}" data-title="{{ event.title|lower }}" data-description="{{ event.description|lower }}">
+                <div class="event-card">
+                  <div class="event-poster-wrap">
+                    <img src="{{ event.display_poster }}" alt="{{ event.title }}" class="event-poster-img" loading="lazy">
+                    <span class="event-badge-category badge-cat-{{ event.category|slice:':6' }}">{{ event.category }}</span>
+                    <span class="badge-fee {% if event.is_free %}bg-success text-white{% else %}bg-dark text-white{% endif %}">
+                      {{ event.display_fee }}
+                    </span>
+                  </div>
+
+                  <div class="p-3.5 d-flex flex-column flex-grow-1">
+                    <h5 class="fw-bold mb-2 fs-6">
+                      <a href="{% url 'event_detail' event.id %}" class="text-white text-decoration-none text-hover-primary">
+                        {{ event.title }}
+                      </a>
+                    </h5>
+
+                    <p class="text-muted small mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                      {{ event.description }}
+                    </p>
+
+                    <!-- Capacity bar -->
+                    <div class="mb-3">
+                      <div class="d-flex justify-content-between small text-muted mb-1" style="font-size: 0.72rem;">
+                        <span><strong class="text-white">{{ event.spots_left }}</strong> seats left</span>
+                        <span>{{ event.fill_percentage }}% Filled</span>
+                      </div>
+                      <div class="progress" style="height: 6px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ event.fill_percentage }}%;"></div>
+                      </div>
+                    </div>
+
+                    <div class="border-top pt-2.5 mt-auto" style="border-color: var(--border-subtle) !important;">
+                      <div class="d-flex justify-content-between align-items-center small text-muted mb-2.5">
+                        <div><i class="bi bi-calendar-event me-1 text-primary"></i> {{ event.date|date:"M d, Y" }}</div>
+                        <div><i class="bi bi-pin-map-fill me-1 text-danger"></i> {{ event.venue }}</div>
+                      </div>
+
+                      <div class="d-flex align-items-center justify-content-between gap-2">
+                        <span class="badge rounded-pill small fw-normal" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-body);">{{ event.start_time|time:"g:i A" }}</span>
+                        <a href="{% url 'event_detail' event.id %}" class="btn btn-primary-gradient btn-sm rounded-pill px-3 fw-semibold">
+                          View Event <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12" id="noEventsMessage">
+                <div class="empty-state">
+                  <div class="empty-icon"><i class="bi bi-calendar-x"></i></div>
+                  <h5 class="text-white">No Upcoming Events</h5>
+                  <p class="text-muted small">This college does not have any active upcoming events scheduled right now.</p>
+                  {% if can_manage %}
+                    <a href="{% url 'event_create' %}" class="btn btn-primary-gradient btn-sm px-4">
+                      <i class="bi bi-plus-circle me-1"></i> Publish First Event
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Past Events Tab -->
+        <div class="tab-pane fade" id="past" role="tabpanel">
+          <div class="row g-4">
+            {% for event in past_events %}
+              <div class="col-md-6">
+                <div class="event-card opacity-75">
+                  <div class="event-poster-wrap">
+                    <img src="{{ event.display_poster }}" alt="{{ event.title }}" class="event-poster-img">
+                    <span class="event-badge-category badge-cat-{{ event.category|slice:':6' }}">{{ event.category }}</span>
+                    <span class="badge-fee bg-secondary text-white">Concluded</span>
+                  </div>
+                  <div class="p-3.5 d-flex flex-column flex-grow-1">
+                    <h5 class="fw-bold mb-2 fs-6">
+                      <a href="{% url 'event_detail' event.id %}" class="text-white text-decoration-none">{{ event.title }}</a>
+                    </h5>
+                    <div class="small text-muted mb-2"><i class="bi bi-calendar-check me-1 text-primary"></i> Held on {{ event.date|date:"M d, Y" }} &bull; {{ event.venue }}</div>
+                    <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top" style="border-color: var(--border-subtle) !important;">
+                      <span class="small text-muted">{{ event.registered_count }} attendees</span>
+                      <a href="{% url 'event_detail' event.id %}" class="btn btn-light btn-sm rounded-pill">View Archive</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="col-12">
+                <div class="empty-state">
+                  <div class="empty-icon"><i class="bi bi-archive"></i></div>
+                  <h5 class="text-white">No Past Events</h5>
+                  <p class="text-muted small mb-0">No past events recorded for this college yet.</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentCategory = 'ALL';
+
+function filterByCategory(cat, el) {
+  currentCategory = cat;
+  document.querySelectorAll('.category-filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  filterCollegeEvents();
+}
+
+function filterCollegeEvents() {
+  const searchTerm = (document.getElementById('collegeEventSearch')?.value || '').toLowerCase().trim();
+  const cards = document.querySelectorAll('#upcomingEventsGrid .event-item-card');
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const cardCat = card.getAttribute('data-category');
+    const cardTitle = card.getAttribute('data-title');
+    const cardDesc = card.getAttribute('data-description');
+
+    const matchesCat = (currentCategory === 'ALL' || cardCat === currentCategory);
+    const matchesSearch = (!searchTerm || cardTitle.includes(searchTerm) || cardDesc.includes(searchTerm) || cardCat.toLowerCase().includes(searchTerm));
+
+    if (matchesCat && matchesSearch) {
+      card.style.display = 'block';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  const countEl = document.getElementById('visibleEventCount');
+  if (countEl) countEl.innerText = visibleCount;
+}
+</script>
+{% endblock %}

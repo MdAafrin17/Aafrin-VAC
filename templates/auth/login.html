@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-5">
+      <div class="card rounded-4 p-4 p-md-5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 35px rgba(99, 102, 241, 0.15);">
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <div class="brand-logo-icon mx-auto mb-3" style="width: 52px; height: 52px; font-size: 1.6rem;">
+            <i class="bi bi-mortarboard-fill"></i>
+          </div>
+          <h2 class="h3 fw-bold mb-1 text-white">Welcome Back</h2>
+          <p class="text-muted small">Sign in to your CampusConnect account</p>
+        </div>
+
+        <!-- 1-Click Quick Demo Accounts Bar -->
+        <div class="p-3 rounded-3 mb-4 border" style="background: rgba(15, 23, 42, 0.7); border-color: var(--border-subtle) !important;">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small fw-bold text-uppercase text-muted"><i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Demo Logins</span>
+          </div>
+          <div class="d-grid gap-2">
+            <button type="button" class="btn btn-outline-primary btn-sm text-start py-1.5" onclick="fillCredentials('md.aafrin@gmail.com', 'student123')">
+              <i class="bi bi-person-circle me-1"></i> Demo Student (Md Aafrin)
+            </button>
+            <button type="button" class="btn btn-outline-custom btn-sm text-start py-1.5" onclick="fillCredentials('college@iitm.ac.in', 'college123')">
+              <i class="bi bi-building me-1 text-primary"></i> Demo College Admin (IIT Madras)
+            </button>
+            <button type="button" class="btn btn-outline-custom btn-sm text-start py-1.5" onclick="fillCredentials('admin@campusconnect.com', 'admin123')">
+              <i class="bi bi-shield-lock me-1 text-warning"></i> Platform Superuser
+            </button>
+          </div>
+        </div>
+
+        <!-- Login Form -->
+        <form method="POST">
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger py-2 small mb-3">
+              {{ form.non_field_errors.0 }}
+            </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted text-uppercase">Email Address</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+              <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="form-label small fw-bold text-muted text-uppercase mb-0">Password</label>
+            </div>
+            {{ form.password }}
+            {% if form.password.errors %}
+              <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-primary-gradient w-100 py-2.5 fw-bold mb-3">
+            Sign In to CampusConnect
+          </button>
+        </form>
+
+        <hr class="my-4">
+
+        <div class="text-center small text-muted">
+          Don't have an account? <br>
+          <div class="mt-2 d-flex justify-content-center gap-3">
+            <a href="{% url 'student_register' %}" class="fw-semibold text-primary text-decoration-none">
+              Register as Student
+            </a>
+            <span>&bull;</span>
+            <a href="{% url 'college_register' %}" class="fw-semibold text-primary text-decoration-none">
+              Register as College
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function fillCredentials(email, pwd) {
+  document.querySelector('input[name="email"]').value = email;
+  document.querySelector('input[name="password"]').value = pwd;
+}
+</script>
+{% endblock %}

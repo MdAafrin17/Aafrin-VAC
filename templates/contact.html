@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact & Support | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="hero-wrapper text-center py-5">
+  <div class="container py-3 position-relative" style="z-index: 2;">
+    <span class="hero-pill mb-2">We're Here to Help</span>
+    <h1 class="display-6 fw-bold mb-2 text-white">Get in Touch with Our Team</h1>
+    <p class="text-muted mx-auto mb-0" style="max-width: 600px;">
+      Have a question about registering your college, technical support, or partnership inquiries? Send us a message and our support team will respond promptly.
+    </p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4 justify-content-center">
+    <!-- Contact Info Cards -->
+    <div class="col-lg-4">
+      <div class="card rounded-4 p-4 mb-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <h5 class="fw-bold mb-3 text-white">Direct Contacts</h5>
+
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-3" style="width: 40px; height: 40px;">
+            <i class="bi bi-envelope-fill"></i>
+          </div>
+          <div>
+            <div class="small fw-bold text-white">Email Support</div>
+            <a href="mailto:mdaafrin17@gmail.com" class="small text-muted text-decoration-none">mdaafrin17@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-start gap-3">
+          <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-3" style="width: 40px; height: 40px;">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <div>
+            <div class="small fw-bold text-white">Headquarters</div>
+            <div class="small text-muted">AMS IT Park, Avadi, Chennai</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campus Ambassador Callout -->
+      <div class="card rounded-4 p-4 text-white" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <h6 class="fw-bold mb-2"><i class="bi bi-trophy-fill text-warning me-2"></i> Become a Campus Ambassador</h6>
+        <p class="small text-white-50 mb-3">
+          Represent CampusConnect in your university! Lead collegiate events, earn certificates and exclusive rewards.
+        </p>
+        <a href="mailto:mdaafrin17@gmail.com?subject=Campus%20Ambassador%20Application" class="btn btn-primary-gradient btn-sm rounded-pill fw-bold">
+          Apply as Ambassador
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="col-lg-7">
+      <div class="card rounded-4 p-4 p-md-5 mb-5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <h4 class="fw-bold mb-3 text-white">Send us a Message</h4>
+        
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Your Name *</label>
+              <input type="text" name="name" class="form-control" placeholder="Md Aafrin" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Email Address *</label>
+              <input type="email" name="email" class="form-control" placeholder="name@example.com" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Subject *</label>
+              <input type="text" name="subject" class="form-control" placeholder="Inquiry about Event Listing / Technical Query" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Message *</label>
+              <textarea name="message" class="form-control" rows="5" placeholder="How can we help your college or student group?" required></textarea>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button type="submit" class="btn btn-primary-gradient px-4 py-2.5 fw-bold">
+              <i class="bi bi-send-fill me-2"></i> Submit Inquiry
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- FAQ Section -->
+      <div>
+        <h4 class="fw-bold mb-3 text-white">Frequently Asked Questions</h4>
+        <div class="accordion rounded-4 overflow-hidden" id="faqAccordion" style="border: 1px solid var(--border-medium);">
+          <div class="accordion-item border-0 border-bottom" style="background: var(--bg-card); border-color: var(--border-subtle) !important;">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button fw-bold py-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" style="background: var(--bg-surface);">
+                How do colleges register and publish events?
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+              <div class="accordion-body small" style="background: var(--bg-card); color: var(--text-body);">
+                College coordinators can sign up via our "Register as College Admin" portal. Once registered, they gain access to an organizer dashboard to create, manage, and monitor event registrations with zero upfront fees.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item border-0 border-bottom" style="background: var(--bg-card); border-color: var(--border-subtle) !important;">
+            <h2 class="accordion-header" id="headingTwo">
+              <button class="accordion-button collapsed fw-bold py-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" style="background: var(--bg-surface);">
+                Can students from any college register for events?
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body small" style="background: var(--bg-card); color: var(--text-body);">
+                Yes! CampusConnect is open to all students across India. You can browse events hosted by any participating institution, filter by city, and receive an instant digital QR registration pass.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item border-0" style="background: var(--bg-card);">
+            <h2 class="accordion-header" id="headingThree">
+              <button class="accordion-button collapsed fw-bold py-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" style="background: var(--bg-surface);">
+                Can I cancel my registration if my schedule changes?
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body small" style="background: var(--bg-card); color: var(--text-body);">
+                Yes, you can view all your active registrations in your Student Dashboard or "My Registrations" page and cancel anytime before the event start date.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

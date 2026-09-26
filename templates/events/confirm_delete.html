@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Delete Event | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+      <div class="card rounded-4 p-4 p-md-5 text-center" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 35px rgba(244, 63, 94, 0.2);">
+        <div class="text-danger mb-3">
+          <i class="bi bi-exclamation-triangle-fill display-4"></i>
+        </div>
+        <h4 class="fw-bold mb-2 text-white">Delete Event?</h4>
+        <p class="text-muted small mb-4">
+          Are you sure you want to permanently delete <strong>"{{ event.title }}"</strong>? This action cannot be undone and will delete all associated registrations.
+        </p>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'college_dashboard' %}" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+            <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Yes, Delete Event</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

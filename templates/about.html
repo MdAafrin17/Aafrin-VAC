@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}About CampusConnect | College Event Discovery & Registration Platform{% endblock %}
+
+{% block content %}
+<!-- About Hero -->
+<div class="hero-wrapper text-center py-5">
+  <div class="container py-4 position-relative" style="z-index: 2;">
+    <span class="hero-pill mb-3">Our Mission</span>
+    <h1 class="display-5 fw-bolder mb-3 text-white">Connecting Campuses, <br><span class="brand-gradient">Fueling Student Innovation</span></h1>
+    <p class="lead text-muted mx-auto" style="max-width: 720px;">
+      CampusConnect is India's leading inter-collegiate event discovery and registration platform, bringing together universities, event organizers, and ambitious students under one unified digital ecosystem.
+    </p>
+  </div>
+</div>
+
+<!-- Core Workflow Section -->
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <span class="text-uppercase fw-bold text-primary small">Seamless Architecture</span>
+    <h2 class="h3 fw-bold text-white">How CampusConnect Works</h2>
+    <p class="text-muted small">From event creation to real-time attendee management in 3 simple steps</p>
+  </div>
+
+  <div class="row g-4 text-center">
+    <div class="col-md-4">
+      <div class="card rounded-4 p-4 h-100" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-4 mb-3 mx-auto" style="width: 60px; height: 60px; font-size: 1.6rem;">
+          <i class="bi bi-building"></i>
+        </div>
+        <h5 class="fw-bold mb-2 text-white">1. Colleges Publish</h5>
+        <p class="text-muted small mb-0">Institutions create verified accounts and publish hackathons, symposiums, robotics bootcamps, and cultural fests with complete rules and venue schedules.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card rounded-4 p-4 h-100" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <div class="d-inline-flex align-items-center justify-content-center bg-success-subtle text-success rounded-4 mb-3 mx-auto" style="width: 60px; height: 60px; font-size: 1.6rem;">
+          <i class="bi bi-search"></i>
+        </div>
+        <h5 class="fw-bold mb-2 text-white">2. Students Discover</h5>
+        <p class="text-muted small mb-0">Students from any college in India discover events based on city, state, or category using our fast, multi-filtered discovery engine.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card rounded-4 p-4 h-100" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <div class="d-inline-flex align-items-center justify-content-center bg-warning-subtle text-warning rounded-4 mb-3 mx-auto" style="width: 60px; height: 60px; font-size: 1.6rem;">
+          <i class="bi bi-qr-code-scan"></i>
+        </div>
+        <h5 class="fw-bold mb-2 text-white">3. Instant Registration & Passes</h5>
+        <p class="text-muted small mb-0">One-click registration generates a unique digital pass ID with verification codes, while organizers monitor attendance live.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Impact & Metrics -->
+<div class="py-5 border-top border-bottom" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6">
+        <span class="badge bg-primary text-white fw-bold px-3 py-1 mb-2">Key Highlights</span>
+        <h2 class="h3 fw-bold mb-3 text-white">Empowering Over 100+ Colleges Across 28 States</h2>
+        <p class="text-muted mb-4">
+          Previously, student organizers relied on fragmented social media posters and messy Google Forms. CampusConnect provides a professional, enterprise-grade portal with automated ticket generation, anti-duplicate registration protection, and streamlined student check-in desks.
+        </p>
+
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="p-3 rounded-3 border" style="background: var(--bg-card); border-color: var(--border-subtle) !important;">
+              <div class="h4 fw-bold text-primary mb-0">100% Verified</div>
+              <div class="small text-muted">College & Event Profiles</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-3 rounded-3 border" style="background: var(--bg-card); border-color: var(--border-subtle) !important;">
+              <div class="h4 fw-bold text-success mb-0">Instant Pass</div>
+              <div class="small text-muted">Digital Check-in IDs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card rounded-4 p-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+          <h5 class="fw-bold mb-3 text-white"><i class="bi bi-check-circle-fill text-success me-2"></i> Why Students & Colleges Choose Us</h5>
+          <ul class="list-unstyled d-flex flex-column gap-3 mb-0 small" style="color: var(--text-body);">
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-shield-check text-primary fs-5 mt-n1"></i>
+              <div><strong class="text-white">Role-Based Access Control:</strong> Strict separation of student participants and college organizers, ensuring tamper-proof event listings.</div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-geo-alt-fill text-danger fs-5 mt-n1"></i>
+              <div><strong class="text-white">Geo-Targeted Discovery:</strong> Local filters pinpoint events happening in your city or across metro tech corridors like Chennai, Bengaluru, Delhi NCR, and Mumbai.</div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-file-earmark-spreadsheet text-success fs-5 mt-n1"></i>
+              <div><strong class="text-white">One-Click CSV Export:</strong> Organizers can export registered candidate rosters anytime for seamless venue access control.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

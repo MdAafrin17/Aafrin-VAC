@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+
+{% block title %}College Admin Dashboard | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="py-4 border-bottom" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        {% if college %}
+          <img src="{{ college.display_logo }}" alt="{{ college.name }}" class="rounded-3 border shadow-xs" width="56" height="56" style="object-fit: cover; border-color: var(--border-medium) !important;">
+          <div>
+            <h1 class="h4 fw-bold mb-0 text-white">{{ college.name }}</h1>
+            <span class="small text-muted"><i class="bi bi-person-check text-success me-1"></i> Admin Portal &bull; {{ user.name }} ({{ user.email }})</span>
+          </div>
+        {% else %}
+          <div>
+            <h1 class="h4 fw-bold mb-0 text-white">Platform Management Dashboard</h1>
+            <span class="small text-muted">Administrator: {{ user.name }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="d-flex gap-2">
+        <a href="{% url 'event_create' %}" class="btn btn-primary-gradient px-3 py-2">
+          <i class="bi bi-plus-circle me-1"></i> Create New Event
+        </a>
+        {% if college %}
+          <a href="{% url 'college_detail' college.id %}" class="btn btn-outline-custom px-3 py-2">
+            <i class="bi bi-eye me-1"></i> View Public Profile
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <!-- KPI Metrics Grid -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-widget">
+        <div class="stat-icon bg-primary-subtle text-primary">
+          <i class="bi bi-calendar4-event"></i>
+        </div>
+        <div>
+          <div class="h3 fw-bold mb-0 text-white">{{ total_events }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Total Events</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-widget">
+        <div class="stat-icon bg-success-subtle text-success">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <div>
+          <div class="h3 fw-bold mb-0 text-white">{{ total_registrations }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Total Registrations</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-widget">
+        <div class="stat-icon bg-warning-subtle text-warning">
+          <i class="bi bi-hourglass-split"></i>
+        </div>
+        <div>
+          <div class="h3 fw-bold mb-0 text-white">{{ upcoming_events.count }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Active Upcoming</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="stat-widget">
+        <div class="stat-icon bg-info-subtle text-info">
+          <i class="bi bi-geo-alt"></i>
+        </div>
+        <div>
+          <div class="h3 fw-bold mb-0 text-white">{{ college.city|default:"All India" }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Host Hub</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Main Events Management Table -->
+    <div class="col-lg-8">
+      <div class="card rounded-4 overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <div class="card-header p-3.5 d-flex justify-content-between align-items-center" style="background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);">
+          <h5 class="fw-bold mb-0 text-white"><i class="bi bi-kanban me-2 text-primary"></i> Published Events ({{ events.count }})</h5>
+          <a href="{% url 'event_create' %}" class="btn btn-sm btn-primary-gradient">
+            <i class="bi bi-plus-lg"></i> Add Event
+          </a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="small text-muted text-uppercase" style="background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);">
+              <tr>
+                <th class="ps-4">Event</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Registrations</th>
+                <th>Fee</th>
+                <th class="text-end pe-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ev in events %}
+                <tr>
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center gap-2">
+                      <img src="{{ ev.display_poster }}" alt="{{ ev.title }}" class="rounded-2" width="48" height="34" style="object-fit: cover; border: 1px solid var(--border-subtle);">
+                      <div class="overflow-hidden">
+                        <a href="{% url 'event_detail' ev.id %}" class="fw-bold text-white text-decoration-none d-block text-truncate" style="max-width: 220px;">
+                          {{ ev.title }}
+                        </a>
+                        <span class="small text-muted">{{ ev.venue }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge rounded-pill small" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-body);">{{ ev.category }}</span>
+                  </td>
+                  <td class="small">
+                    <div class="text-white">{{ ev.date|date:"M d, Y" }}</div>
+                    <span class="text-muted">{{ ev.start_time|time:"g:i A" }}</span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="fw-bold text-primary">{{ ev.registered_count }}</span>
+                      <span class="text-muted small">/ {{ ev.max_participants }}</span>
+                    </div>
+                    <div class="progress" style="height: 4px; width: 80px;">
+                      <div class="progress-bar bg-primary" role="progressbar" style="width: {{ ev.fill_percentage }}%;"></div>
+                    </div>
+                  </td>
+                  <td class="small fw-semibold text-white">
+                    {{ ev.display_fee }}
+                  </td>
+                  <td class="text-end pe-4">
+                    <div class="dropdown">
+                      <button class="btn btn-light btn-sm border rounded-pill px-2.5" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
+                        <li><a class="dropdown-item py-1.5" href="{% url 'event_detail' ev.id %}"><i class="bi bi-eye me-2 text-primary"></i> View Page</a></li>
+                        <li><a class="dropdown-item py-1.5" href="#" onclick="openParticipantsModal({{ ev.id }}, '{{ ev.title|escapejs }}')"><i class="bi bi-people me-2 text-info"></i> View Participants</a></li>
+                        <li><a class="dropdown-item py-1.5" href="{% url 'event_export_csv' ev.id %}"><i class="bi bi-file-earmark-arrow-down me-2 text-success"></i> Export CSV</a></li>
+                        <li><a class="dropdown-item py-1.5" href="{% url 'event_edit' ev.id %}"><i class="bi bi-pencil me-2 text-warning"></i> Edit Details</a></li>
+                        <li><hr class="dropdown-divider" style="border-color: var(--border-subtle);"></li>
+                        <li><a class="dropdown-item py-1.5 text-danger" href="{% url 'event_delete' ev.id %}"><i class="bi bi-trash me-2"></i> Delete</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="6" class="text-center py-5 text-muted">
+                    <i class="bi bi-calendar-plus display-6 d-block mb-2 text-secondary"></i>
+                    No events published yet. Click "Create New Event" to get started!
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Registrations Feed Sidebar -->
+    <div class="col-lg-4">
+      <div class="card rounded-4 p-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <h5 class="fw-bold mb-3 text-white"><i class="bi bi-clock-history me-2 text-primary"></i> Recent Registrations</h5>
+        <div class="d-flex flex-column gap-3">
+          {% for r in recent_registrations %}
+            <div class="p-3 rounded-3 border" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <span class="fw-bold small text-white">{{ r.student.name }}</span>
+                <span class="badge bg-success-subtle text-success small font-monospace">{{ r.registration_id }}</span>
+              </div>
+              <div class="small text-muted mb-1 text-truncate">
+                <i class="bi bi-calendar2-event me-1"></i> {{ r.event.title }}
+              </div>
+              <div class="d-flex justify-content-between align-items-center small text-muted" style="font-size: 0.75rem;">
+                <span><i class="bi bi-mortarboard me-1"></i> {{ r.student.college_display_name }}</span>
+                <span>{{ r.registered_at|timesince }} ago</span>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-muted small mb-0">No student registrations received yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dynamic Participants Modal -->
+<div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="partModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content rounded-4" style="background: var(--bg-surface); border: 1px solid var(--border-medium); box-shadow: 0 25px 60px rgba(0,0,0,0.8);">
+      <div class="modal-header border-0 py-3" style="background: var(--bg-card); border-bottom: 1px solid var(--border-subtle) !important;">
+        <h5 class="modal-title fw-bold text-white" id="partModalLabel"><i class="bi bi-people-fill me-2 text-primary"></i> Registered Participants</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" id="participants-modal-body">
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+          <div class="small text-muted mt-2">Loading participants...</div>
+        </div>
+      </div>
+      <div class="modal-footer border-0 py-2.5" style="background: var(--bg-card); border-top: 1px solid var(--border-subtle) !important;">
+        <button type="button" class="btn btn-secondary btn-sm rounded-pill" data-bs-dismiss="modal">Close</button>
+        <a href="#" id="modal-export-csv-btn" class="btn btn-success btn-sm rounded-pill"><i class="bi bi-download me-1"></i> Download CSV</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function openParticipantsModal(eventId, eventTitle) {
+  const modalEl = document.getElementById('participantsModal');
+  const modal = new bootstrap.Modal(modalEl);
+  document.getElementById('partModalLabel').innerHTML = `<i class="bi bi-people-fill me-2 text-primary"></i> ${eventTitle} &mdash; Participants`;
+  document.getElementById('modal-export-csv-btn').href = `/events/${eventId}/export-csv/`;
+  
+  const bodyEl = document.getElementById('participants-modal-body');
+  bodyEl.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><div class="small text-muted mt-2">Loading participants list...</div></div>';
+  modal.show();
+
+  try {
+    const res = await fetch(`/api/events/${eventId}/participants/`);
+    const data = await res.json();
+    if (res.ok) {
+      if (data.participants.length === 0) {
+        bodyEl.innerHTML = '<div class="text-center py-4 text-muted"><i class="bi bi-emoji-neutral fs-2 d-block mb-2"></i>No students have registered for this event yet.</div>';
+      } else {
+        let html = `
+          <div class="mb-3 d-flex justify-content-between align-items-center">
+            <span class="small text-muted">Total Registered: <strong class="text-white">${data.registered_count}</strong> of ${data.max_participants}</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle">
+              <thead class="small text-muted" style="background: var(--bg-card); border-bottom: 1px solid var(--border-subtle);">
+                <tr>
+                  <th>Pass ID</th>
+                  <th>Student Name</th>
+                  <th>Email</th>
+                  <th>College</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+        data.participants.forEach(p => {
+          html += `
+            <tr>
+              <td><span class="font-monospace fw-bold small text-primary">${p.registration_id}</span></td>
+              <td class="fw-semibold text-white">${p.student_name}</td>
+              <td class="small text-muted">${p.student_email}</td>
+              <td class="small text-truncate text-muted" style="max-width: 160px;">${p.student_college || '-'}</td>
+              <td><span class="badge ${p.status === 'CONFIRMED' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'} small">${p.status}</span></td>
+            </tr>
+          `;
+        });
+        html += '</tbody></table></div>';
+        bodyEl.innerHTML = html;
+      }
+    } else {
+      bodyEl.innerHTML = `<div class="alert alert-danger">${data.error || 'Failed to fetch participants.'}</div>`;
+    }
+  } catch(e) {
+    bodyEl.innerHTML = '<div class="alert alert-danger">An error occurred while loading participants.</div>';
+  }
+}
+</script>
+{% endblock %}

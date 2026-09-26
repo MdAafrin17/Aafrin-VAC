@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="py-4 border-bottom" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <img src="{{ user.display_avatar }}" alt="{{ user.name }}" class="rounded-circle border shadow-sm" width="60" height="60" style="border-color: var(--border-medium) !important;">
+        <div>
+          <h1 class="h4 fw-bold mb-0 text-white">{{ user.name }}</h1>
+          <span class="small text-muted"><i class="bi bi-mortarboard-fill text-primary me-1"></i> {{ user.college_display_name }} &bull; {{ user.email }}</span>
+        </div>
+      </div>
+      <div>
+        <a href="{% url 'events_discovery' %}" class="btn btn-primary-gradient px-4">
+          <i class="bi bi-compass me-1"></i> Explore New Events
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <!-- Stats Row -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-4">
+      <div class="stat-widget">
+        <div class="stat-icon bg-primary-subtle text-primary">
+          <i class="bi bi-ticket-detailed-fill"></i>
+        </div>
+        <div>
+          <div class="h3 fw-bold mb-0 text-white">{{ total_registrations }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Total Registrations</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="stat-widget">
+        <div class="stat-icon bg-success-subtle text-success">
+          <i class="bi bi-calendar-check-fill"></i>
+        </div>
+        <div>
+          <div class="h3 fw-bold mb-0 text-white">{{ upcoming_regs.count }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Upcoming Passes</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="stat-widget">
+        <div class="stat-icon bg-secondary-subtle text-secondary">
+          <i class="bi bi-check2-all"></i>
+        </div>
+        <div>
+          <div class="h3 fw-bold mb-0 text-white">{{ past_regs.count }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Completed Events</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Active Registrations -->
+    <div class="col-lg-8">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0 text-white"><i class="bi bi-qr-code me-2 text-primary"></i> My Event Passes</h5>
+        <a href="{% url 'my_registrations' %}" class="small text-primary fw-semibold text-decoration-none">Manage All Passes &rarr;</a>
+      </div>
+
+      <div class="d-flex flex-column gap-3 mb-5">
+        {% for reg in registrations %}
+          <div class="card rounded-4 p-3.5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+            <div class="row align-items-center g-3">
+              <div class="col-md-3">
+                <img src="{{ reg.event.display_poster }}" alt="{{ reg.event.title }}" class="rounded-3 w-100" style="aspect-ratio: 16/10; object-fit: cover; border: 1px solid var(--border-subtle);">
+              </div>
+
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="badge rounded-pill small" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-body);">{{ reg.event.category }}</span>
+                  {% if reg.status == 'CONFIRMED' %}
+                    <span class="badge bg-success-subtle text-success border border-success-subtle small">Confirmed</span>
+                  {% else %}
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle small">Cancelled</span>
+                  {% endif %}
+                </div>
+
+                <h5 class="fw-bold mb-1 fs-6">
+                  <a href="{% url 'event_detail' reg.event.id %}" class="text-white text-decoration-none text-hover-primary">{{ reg.event.title }}</a>
+                </h5>
+                <div class="small text-muted mb-1"><i class="bi bi-building me-1 text-primary"></i> {{ reg.event.college.name }}</div>
+                <div class="small text-muted"><i class="bi bi-calendar-event me-1 text-primary"></i> {{ reg.event.date|date:"M d, Y" }} &bull; {{ reg.event.venue }}</div>
+                <div class="small text-muted mt-1 font-monospace">Pass ID: <strong class="text-primary">{{ reg.registration_id }}</strong></div>
+              </div>
+
+              <div class="col-md-3 text-md-end d-flex flex-md-column gap-2 justify-content-center">
+                {% if reg.status == 'CONFIRMED' %}
+                  <button type="button" class="btn btn-outline-primary btn-sm rounded-pill fw-semibold" onclick="showRegistrationConfirmationModal({
+                    event_title: '{{ reg.event.title|escapejs }}',
+                    event_category: '{{ reg.event.category|escapejs }}',
+                    college_name: '{{ reg.event.college.name|escapejs }}',
+                    student_name: '{{ user.name|escapejs }}',
+                    student_college: '{{ user.college_display_name|escapejs }}',
+                    event_date: '{{ reg.event.date|date:'M d, Y' }}',
+                    event_venue: '{{ reg.event.venue|escapejs }}',
+                    event_city: '{{ reg.event.city|escapejs }}',
+                    registration_id: '{{ reg.registration_id }}'
+                  })">
+                    <i class="bi bi-qr-code me-1"></i> View Ticket
+                  </button>
+
+                  <form action="{% url 'cancel_registration' reg.id %}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this registration?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill w-100">
+                      Cancel Pass
+                    </button>
+                  </form>
+                {% else %}
+                  <span class="badge bg-secondary text-white py-2">Cancelled</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="empty-state">
+            <div class="empty-icon"><i class="bi bi-ticket-perforated"></i></div>
+            <h5 class="text-white">No Registrations Yet</h5>
+            <p class="text-muted small mb-3">You haven't registered for any events yet. Discover competitions and hackathons to showcase your skills!</p>
+            <a href="{% url 'events_discovery' %}" class="btn btn-primary-gradient btn-sm px-4">Browse Events</a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Recommended for You Sidebar -->
+    <div class="col-lg-4">
+      <div class="card rounded-4 p-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <h5 class="fw-bold mb-3 text-white"><i class="bi bi-stars text-warning me-2"></i> Recommended for You</h5>
+        <div class="d-flex flex-column gap-3">
+          {% for rec in recommended_events %}
+            <div class="d-flex gap-3 align-items-center">
+              <img src="{{ rec.display_poster }}" alt="{{ rec.title }}" class="rounded-3" width="70" height="50" style="object-fit: cover; border: 1px solid var(--border-subtle);">
+              <div class="overflow-hidden flex-grow-1">
+                <span class="badge rounded-pill small" style="font-size: 0.68rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-body);">{{ rec.category }}</span>
+                <h6 class="fw-bold mb-0 text-truncate">
+                  <a href="{% url 'event_detail' rec.id %}" class="text-white text-decoration-none text-hover-primary">{{ rec.title }}</a>
+                </h6>
+                <div class="small text-muted" style="font-size: 0.75rem;">{{ rec.date|date:"M d" }} &bull; {{ rec.display_fee }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

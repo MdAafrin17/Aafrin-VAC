@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if is_edit %}Edit Event: {{ event.title }}{% else %}Publish New Event{% endif %} | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <a href="{% url 'college_dashboard' %}" class="small text-muted text-decoration-none mb-1 d-inline-block">
+            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+          </a>
+          <h1 class="h3 fw-bold mb-0">{% if is_edit %}Edit Event Details{% else %}Publish New College Event{% endif %}</h1>
+        </div>
+      </div>
+
+      <div class="card rounded-4 p-4 p-md-5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 35px rgba(99, 102, 241, 0.15);">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger py-2 small mb-4">
+              {{ form.non_field_errors.0 }}
+            </div>
+          {% endif %}
+
+          <!-- Basic Info -->
+          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
+            <i class="bi bi-info-circle text-primary me-2"></i> Basic Information
+          </h5>
+
+          <div class="row g-3 mb-4">
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Event Title *</label>
+              {{ form.title }}
+              {% if form.title.errors %}<div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Category *</label>
+              {{ form.category }}
+              {% if form.category.errors %}<div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Registration Fee (₹) *</label>
+              {{ form.registration_fee }}
+              <div class="form-text small">Enter 0 for Free entry.</div>
+              {% if form.registration_fee.errors %}<div class="text-danger small mt-1">{{ form.registration_fee.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Event Description *</label>
+              {{ form.description }}
+              {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+
+          <!-- Poster Image -->
+          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
+            <i class="bi bi-image text-primary me-2"></i> Event Poster / Banner
+          </h5>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Upload Poster Image</label>
+              {{ form.poster }}
+              <div class="form-text small">PNG, JPG or WebP (max 5MB)</div>
+              {% if form.poster.errors %}<div class="text-danger small mt-1">{{ form.poster.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Or Direct Poster URL</label>
+              {{ form.poster_url }}
+              <div class="form-text small">Optional web image URL</div>
+              {% if form.poster_url.errors %}<div class="text-danger small mt-1">{{ form.poster_url.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+
+          <!-- Date & Time -->
+          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
+            <i class="bi bi-calendar3 text-primary me-2"></i> Schedule & Deadlines
+          </h5>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-muted text-uppercase">Event Date *</label>
+              {{ form.date }}
+              {% if form.date.errors %}<div class="text-danger small mt-1">{{ form.date.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-muted text-uppercase">Start Time *</label>
+              {{ form.start_time }}
+              {% if form.start_time.errors %}<div class="text-danger small mt-1">{{ form.start_time.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-muted text-uppercase">End Time *</label>
+              {{ form.end_time }}
+              {% if form.end_time.errors %}<div class="text-danger small mt-1">{{ form.end_time.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Registration Deadline *</label>
+              {{ form.registration_deadline }}
+              {% if form.registration_deadline.errors %}<div class="text-danger small mt-1">{{ form.registration_deadline.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Maximum Capacity (Seats) *</label>
+              {{ form.max_participants }}
+              {% if form.max_participants.errors %}<div class="text-danger small mt-1">{{ form.max_participants.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+
+          <!-- Venue & Location -->
+          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
+            <i class="bi bi-geo-alt text-primary me-2"></i> Venue & Location
+          </h5>
+
+          <div class="row g-3 mb-4">
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Campus Venue / Hall *</label>
+              {{ form.venue }}
+              {% if form.venue.errors %}<div class="text-danger small mt-1">{{ form.venue.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">City *</label>
+              {{ form.city }}
+              {% if form.city.errors %}<div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">State *</label>
+              {{ form.state }}
+              {% if form.state.errors %}<div class="text-danger small mt-1">{{ form.state.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+
+          <!-- Rules & Guidelines -->
+          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
+            <i class="bi bi-shield-check text-primary me-2"></i> Event Rules & Eligibility
+          </h5>
+
+          <div class="mb-4">
+            {{ form.rules }}
+            <div class="form-text small">Provide team size requirements, permitted tools, prerequisites, code of conduct, etc.</div>
+            {% if form.rules.errors %}<div class="text-danger small mt-1">{{ form.rules.errors.0 }}</div>{% endif %}
+          </div>
+
+          <div class="d-flex justify-content-end gap-2">
+            <a href="{% url 'college_dashboard' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+            <button type="submit" class="btn btn-primary-gradient px-5 fw-bold">
+              {% if is_edit %}Save Changes{% else %}Publish Event{% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

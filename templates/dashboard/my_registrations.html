@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}My Registrations | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="py-4 border-bottom" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h1 class="h3 fw-bold mb-1 text-white">My Registrations & Event Passes</h1>
+        <p class="text-muted small mb-0">View all your registered events, access digital entry passes, and manage participation.</p>
+      </div>
+      <div>
+        <span class="badge bg-primary px-3 py-2 rounded-pill fs-6">
+          <i class="bi bi-ticket-perforated me-1"></i> {{ confirmed_count }} Confirmed Passes
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="row g-4">
+    {% for reg in registrations %}
+      <div class="col-lg-6">
+        <div class="card rounded-4 overflow-hidden h-100" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+          <!-- Ticket Header with Poster Banner -->
+          <div class="position-relative" style="height: 120px; overflow: hidden;">
+            <img src="{{ reg.event.display_poster }}" alt="{{ reg.event.title }}" class="w-100 h-100" style="object-fit: cover; filter: brightness(0.65);">
+            <div class="position-absolute top-0 start-0 w-100 h-100 p-3 d-flex justify-content-between align-items-start text-white">
+              <span class="badge bg-primary fw-bold text-uppercase">{{ reg.event.category }}</span>
+              <span class="badge {% if reg.status == 'CONFIRMED' %}bg-success text-white{% else %}bg-danger text-white{% endif %} fw-bold">
+                {{ reg.get_status_display }}
+              </span>
+            </div>
+            <div class="position-absolute bottom-0 start-0 p-3 text-white">
+              <h5 class="fw-bold mb-0 text-white text-shadow text-truncate" style="max-width: 480px;">{{ reg.event.title }}</h5>
+            </div>
+          </div>
+
+          <!-- Ticket Body -->
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <div class="d-flex align-items-center gap-2 mb-3 text-muted small">
+              <i class="bi bi-building text-primary"></i>
+              <span class="fw-semibold text-white">{{ reg.event.college.name }}</span>
+            </div>
+
+            <div class="row g-3 small mb-4">
+              <div class="col-6">
+                <span class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Student Name</span>
+                <div class="fw-bold text-white">{{ reg.student.name }}</div>
+              </div>
+              <div class="col-6">
+                <span class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Student College</span>
+                <div class="fw-bold text-white text-truncate">{{ reg.student.college_display_name }}</div>
+              </div>
+              <div class="col-6">
+                <span class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Event Date & Time</span>
+                <div class="fw-bold text-white"><i class="bi bi-calendar3 me-1 text-primary"></i> {{ reg.event.date|date:"M d, Y" }} &bull; {{ reg.event.start_time|time:"g:i A" }}</div>
+              </div>
+              <div class="col-6">
+                <span class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Venue</span>
+                <div class="fw-bold text-white"><i class="bi bi-geo-alt me-1 text-danger"></i> {{ reg.event.venue }}, {{ reg.event.city }}</div>
+              </div>
+            </div>
+
+            <!-- Pass ID & QR Container -->
+            <div class="p-3 rounded-3 d-flex justify-content-between align-items-center border mt-auto mb-3" style="background: var(--bg-surface); border-color: var(--border-subtle) !important;">
+              <div>
+                <span class="text-muted small text-uppercase" style="font-size: 0.7rem;">Official Registration ID</span>
+                <div class="h5 fw-bolder font-monospace text-primary mb-0">{{ reg.registration_id }}</div>
+                <div class="text-muted small" style="font-size: 0.72rem;">Registered: {{ reg.registered_at|date:"d M Y, h:i A" }}</div>
+              </div>
+              <div class="ticket-qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=65x65&data={{ reg.registration_id }}" alt="QR Pass" width="65" height="65">
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center gap-2 pt-2 border-top" style="border-color: var(--border-subtle) !important;">
+              <a href="{% url 'event_detail' reg.event.id %}" class="btn btn-outline-custom btn-sm rounded-pill">
+                <i class="bi bi-info-circle me-1"></i> Event Page
+              </a>
+
+              <div class="d-flex gap-2">
+                {% if reg.status == 'CONFIRMED' %}
+                  <button type="button" class="btn btn-primary-gradient btn-sm rounded-pill px-3" onclick="showRegistrationConfirmationModal({
+                    event_title: '{{ reg.event.title|escapejs }}',
+                    event_category: '{{ reg.event.category|escapejs }}',
+                    college_name: '{{ reg.event.college.name|escapejs }}',
+                    student_name: '{{ reg.student.name|escapejs }}',
+                    student_college: '{{ reg.student.college_display_name|escapejs }}',
+                    event_date: '{{ reg.event.date|date:'M d, Y' }}',
+                    event_venue: '{{ reg.event.venue|escapejs }}',
+                    event_city: '{{ reg.event.city|escapejs }}',
+                    registration_id: '{{ reg.registration_id }}'
+                  })">
+                    <i class="bi bi-printer me-1"></i> Print Pass
+                  </button>
+
+                  <form action="{% url 'cancel_registration' reg.id %}" method="POST" onsubmit="return confirm('Are you sure you want to cancel your registration for this event?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
+                      Cancel
+                    </button>
+                  </form>
+                {% else %}
+                  <span class="text-muted small">Registration Cancelled</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="empty-state">
+          <div class="empty-icon"><i class="bi bi-ticket-perforated"></i></div>
+          <h4 class="text-white">No Registrations Found</h4>
+          <p class="text-muted mb-4">You have not registered for any events yet.</p>
+          <a href="{% url 'events_discovery' %}" class="btn btn-primary-gradient px-4">
+            <i class="bi bi-compass me-2"></i> Discover Events Across India
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

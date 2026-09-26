@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusConnect | Discover. Participate. Connect.{% endblock %}
+
+{% block content %}
+<!-- ==========================================================================
+     1. Full-Screen 3D Hero Section (College Building Main Background)
+     ========================================================================== -->
+<section class="hero-3d-viewport" id="heroViewport">
+  <!-- Layer 0: Uploaded College Building Background with Parallax -->
+  <div class="hero-bg-parallax" id="heroBgParallax" aria-hidden="true"></div>
+
+  <!-- Layer 1: Dark Transparent Gradient -->
+  <div class="hero-layer-gradient" aria-hidden="true"></div>
+
+  <!-- Layer 2: Subtle Blue/Purple Atmospheric Glow -->
+  <div class="hero-layer-glow" aria-hidden="true"></div>
+
+  <!-- Layer 3: Very Subtle Vignette -->
+  <div class="hero-layer-vignette" aria-hidden="true"></div>
+
+  <!-- Layer 4: Glass Reflection Sheen -->
+  <div class="hero-layer-sheen" aria-hidden="true"></div>
+
+  <!-- Layer 5: Foreground 3D Content Stage -->
+  <div class="container hero-3d-container">
+    <div class="row align-items-center min-vh-100 py-5">
+      <!-- Left/Center 3D Glass Command Panel -->
+      <div class="col-lg-7 col-xl-6">
+        <div class="hero-3d-glass-panel" id="heroGlassPanel">
+          <div class="panel-glow-corner"></div>
+
+          <div class="hero-pill-badge mb-3">
+            <span class="pulse-emerald"></span>
+            <span>NEXT-GEN CAMPUS NETWORK • 2026 EDITION</span>
+          </div>
+
+          <!-- Heading: "CAMPUS CONNECT" separated visually with 3D text depth & glow -->
+          <h1 class="hero-3d-title">
+            <span class="hero-word-campus">CAMPUS</span>
+            <span class="hero-word-connect">CONNECT</span>
+          </h1>
+
+          <div class="hero-tagline-text mb-2">
+            Discover. Participate. Connect.
+          </div>
+          <div class="text-cyan small fw-bold text-uppercase tracking-wider mb-3" style="color: #38bdf8;">
+            <i class="bi bi-stars me-1"></i> Discover College Events & Competitions
+          </div>
+
+          <p class="hero-description-text mb-4">
+            One platform to discover college events, competitions, workshops and activities happening around you.
+          </p>
+
+          <!-- 3D Glass Buttons -->
+          <div class="d-flex flex-wrap gap-3 mb-4">
+            <a href="#discoverySection" class="btn-3d-glass btn-3d-primary">
+              <span class="btn-light-shimmer"></span>
+              <i class="bi bi-compass me-2"></i> EXPLORE EVENTS
+            </a>
+            <a href="{% url 'college_register' %}" class="btn-3d-glass btn-3d-secondary">
+              <span class="btn-light-shimmer"></span>
+              <i class="bi bi-building-add me-2 text-primary"></i> HOST AN EVENT
+            </a>
+          </div>
+
+          <!-- Glass Search Bar inside Hero Panel -->
+          <form action="{% url 'events_discovery' %}" method="GET" class="hero-glass-search">
+            <div class="input-group">
+              <span class="input-group-text bg-transparent border-0 text-muted"><i class="bi bi-search text-info"></i></span>
+              <input type="text" name="q" class="form-control bg-transparent border-0 text-white shadow-none" placeholder="Search events, colleges or locations..." aria-label="Search events">
+              <button type="submit" class="btn btn-primary-gradient px-3.5 py-1.5 rounded-pill my-1 me-1">
+                Search
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Area: Floating 3D Statistics Cards at Different Depths -->
+      <div class="col-lg-5 col-xl-6 position-relative hero-stats-stage" id="heroStatsStage">
+        <!-- Card 1: Slightly Left / Upper -->
+        <div class="floating-3d-stat stat-pos-1" data-depth="1.3">
+          <div class="stat-glass-card">
+            <div class="stat-icon-wrap"><i class="bi bi-calendar-check-fill text-primary"></i></div>
+            <div class="stat-number">100+</div>
+            <div class="stat-label">Events</div>
+            <div class="stat-sub">Live & Upcoming</div>
+          </div>
+        </div>
+
+        <!-- Card 2: Slightly Right / Upper -->
+        <div class="floating-3d-stat stat-pos-2" data-depth="1.7">
+          <div class="stat-glass-card">
+            <div class="stat-icon-wrap"><i class="bi bi-buildings-fill text-info"></i></div>
+            <div class="stat-number">25+</div>
+            <div class="stat-label">Colleges</div>
+            <div class="stat-sub">Verified Institutions</div>
+          </div>
+        </div>
+
+        <!-- Card 3: Lower Left -->
+        <div class="floating-3d-stat stat-pos-3" data-depth="1.4">
+          <div class="stat-glass-card">
+            <div class="stat-icon-wrap"><i class="bi bi-people-fill text-purple" style="color: #a855f7;"></i></div>
+            <div class="stat-number">5K+</div>
+            <div class="stat-label">Students</div>
+            <div class="stat-sub">Active Network</div>
+          </div>
+        </div>
+
+        <!-- Card 4: Lower Right -->
+        <div class="floating-3d-stat stat-pos-4" data-depth="1.9">
+          <div class="stat-glass-card">
+            <div class="stat-icon-wrap"><i class="bi bi-geo-alt-fill text-danger"></i></div>
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Cities</div>
+            <div class="stat-sub">Across India</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     2. 3D Event Discovery Section
+     ========================================================================== -->
+<section class="py-5" id="discoverySection" style="background: var(--bg-primary); border-top: 1px solid var(--border-subtle);">
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1.5 rounded-pill fw-bold text-uppercase small mb-2">
+        <i class="bi bi-stars me-1"></i> Interactive Event Radar
+      </span>
+      <h2 class="display-6 fw-bold text-white mb-2">Discover What's Happening</h2>
+      <p class="text-muted mx-auto" style="max-width: 600px;">
+        Find events, competitions and experiences across colleges.
+      </p>
+
+      <!-- Search Bar -->
+      <div class="mx-auto mt-4" style="max-width: 760px;">
+        <form action="{% url 'events_discovery' %}" method="GET" class="hero-search-box p-2 d-flex align-items-center gap-2">
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-0 text-muted"><i class="bi bi-search text-primary"></i></span>
+            <input type="text" name="q" class="form-control bg-transparent border-0 text-white shadow-none" placeholder="Search events, colleges or locations...">
+          </div>
+          <button type="submit" class="btn btn-primary-gradient px-4 py-2 rounded-pill flex-shrink-0">
+            <i class="bi bi-compass me-1"></i> Explore
+          </button>
+        </form>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap mt-4">
+        <a href="{% url 'events_discovery' %}" class="btn btn-sm btn-outline-custom rounded-pill px-3 py-1.5 active text-white">
+          All
+        </a>
+        <a href="{% url 'events_discovery' %}?category=Hackathon" class="btn btn-sm btn-outline-custom rounded-pill px-3 py-1.5">
+          💻 Hackathon
+        </a>
+        <a href="{% url 'events_discovery' %}?category=Workshop" class="btn btn-sm btn-outline-custom rounded-pill px-3 py-1.5">
+          🛠️ Workshop
+        </a>
+        <a href="{% url 'events_discovery' %}?category=Symposium" class="btn btn-sm btn-outline-custom rounded-pill px-3 py-1.5">
+          ⚡ Symposium
+        </a>
+        <a href="{% url 'events_discovery' %}?category=Cultural" class="btn btn-sm btn-outline-custom rounded-pill px-3 py-1.5">
+          🎭 Cultural
+        </a>
+        <a href="{% url 'events_discovery' %}?category=Sports" class="btn btn-sm btn-outline-custom rounded-pill px-3 py-1.5">
+          🏆 Sports
+        </a>
+        <a href="{% url 'events_discovery' %}?category=Technical" class="btn btn-sm btn-outline-custom rounded-pill px-3 py-1.5">
+          🤖 Technical
+        </a>
+      </div>
+    </div>
+
+    <!-- 3D Event Cards Grid -->
+    <div class="row g-4">
+      {% for event in upcoming_events %}
+        <div class="col-md-6 col-lg-4">
+          <div class="event-card">
+            <div class="event-poster-wrap">
+              <img src="{{ event.display_poster }}" alt="{{ event.title }}" class="event-poster-img" loading="lazy">
+              <span class="event-badge-category badge-cat-{{ event.category|slice:':6' }}">{{ event.category }}</span>
+              <span class="badge-fee {% if event.is_free %}bg-success text-white{% else %}bg-dark text-white{% endif %}">
+                {{ event.display_fee }}
+              </span>
+            </div>
+
+            <div class="p-4 d-flex flex-column flex-grow-1">
+              <div class="d-flex align-items-center gap-2 mb-2 text-muted small">
+                <i class="bi bi-building text-primary"></i>
+                <a href="{% url 'college_detail' event.college.id %}" class="text-muted text-decoration-none text-truncate fw-medium">
+                  {{ event.college.name }}
+                </a>
+              </div>
+
+              <h5 class="fw-bold mb-2">
+                <a href="{% url 'event_detail' event.id %}" class="text-white text-decoration-none">
+                  {{ event.title }}
+                </a>
+              </h5>
+
+              <p class="text-muted small mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                {{ event.description }}
+              </p>
+
+              <div class="border-top pt-3 mt-auto" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                <div class="d-flex justify-content-between align-items-center small text-muted mb-3">
+                  <div><i class="bi bi-calendar-event me-1 text-primary"></i> {{ event.date|date:"M d, Y" }}</div>
+                  <div><i class="bi bi-geo-alt me-1 text-danger"></i> {{ event.city }}</div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between gap-2">
+                  <div class="small text-muted">
+                    <span class="fw-bold text-white">{{ event.spots_left }}</span> spots left
+                  </div>
+                  <a href="{% url 'event_detail' event.id %}" class="btn btn-outline-custom btn-sm rounded-pill px-3 fw-semibold">
+                    View Event <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="p-5 text-center rounded-4 border border-white-15" style="background: rgba(10, 15, 28, 0.7);">
+            <div class="display-4 text-muted mb-3"><i class="bi bi-calendar-x"></i></div>
+            <h4 class="text-white">No Upcoming Events Yet</h4>
+            <p class="text-muted">Check back soon or publish the first event for your institution!</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     3. 3D College Directory Section
+     ========================================================================== -->
+<section class="py-5" id="colleges" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle);">
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+      <div>
+        <span class="text-uppercase fw-bold text-cyan small tracking-wider"><i class="bi bi-buildings-fill me-1"></i> Directory</span>
+        <h2 class="display-6 fw-bold text-white mb-0">Explore Colleges</h2>
+        <p class="text-muted small mb-0">Premier institutions hosting landmark hackathons and technical symposiums.</p>
+      </div>
+      <a href="{% url 'events_discovery' %}" class="fw-semibold text-primary text-decoration-none">
+        All Colleges <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    <div class="row g-4">
+      {% for col in featured_colleges %}
+        <div class="col-md-6 col-lg-4">
+          <a href="{% url 'college_detail' col.id %}" class="college-card">
+            <div class="d-flex align-items-center gap-3">
+              <img src="{{ col.display_logo }}" alt="{{ col.name }}" class="college-logo-img">
+              <div class="overflow-hidden">
+                <h6 class="fw-bold mb-1 text-white text-truncate">{{ col.name }}</h6>
+                <div class="small text-muted mb-2"><i class="bi bi-geo-alt me-1 text-danger"></i> {{ col.city }}, {{ col.state }}</div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <span class="badge bg-primary-subtle text-primary rounded-pill small">
+                    {{ col.events.count }} Events Hosted
+                  </span>
+                  <span class="badge bg-dark-subtle text-muted rounded-pill small">
+                    Active Students
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     4. How CampusConnect Works (3-Step 3D Section)
+     ========================================================================== -->
+<section class="py-5" style="background: var(--bg-primary); border-top: 1px solid var(--border-subtle);">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1.5 rounded-pill fw-bold text-uppercase small mb-2">
+        <i class="bi bi-gear-wide-connected me-1"></i> Seamless Workflow
+      </span>
+      <h2 class="display-6 fw-bold text-white mb-2">How CampusConnect Works</h2>
+      <p class="text-muted mx-auto" style="max-width: 580px;">
+        Connect with collegiate innovators, reserve verified passes, and compete nationwide in 3 steps.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Step 01 -->
+      <div class="col-md-4">
+        <div class="step-card-3d">
+          <div class="step-num-watermark">01</div>
+          <div class="stat-icon-wrap bg-primary-subtle text-primary mb-3">
+            <i class="bi bi-compass-fill"></i>
+          </div>
+          <h4 class="fw-bold text-white mb-2">DISCOVER</h4>
+          <p class="text-muted small mb-0">
+            Find hackathons, technical symposiums, workshops, and cultural fests happening across universities using multi-filtered geo-discovery.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 02 -->
+      <div class="col-md-4">
+        <div class="step-card-3d">
+          <div class="step-num-watermark">02</div>
+          <div class="stat-icon-wrap bg-success-subtle text-success mb-3">
+            <i class="bi bi-qr-code-scan"></i>
+          </div>
+          <h4 class="fw-bold text-white mb-2">REGISTER & PASS</h4>
+          <p class="text-muted small mb-0">
+            One-click student registration generates an official digital ticket pass with anti-duplicate verification and instant QR code validation.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 03 -->
+      <div class="col-md-4">
+        <div class="step-card-3d">
+          <div class="step-num-watermark">03</div>
+          <div class="stat-icon-wrap bg-info-subtle text-cyan mb-3">
+            <i class="bi bi-trophy-fill"></i>
+          </div>
+          <h4 class="fw-bold text-white mb-2">PARTICIPATE & COMPETE</h4>
+          <p class="text-muted small mb-0">
+            Attend venues, showcase your technical and creative skills, earn certificates, and connect with nationwide collegiate talent.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     5. Local Highlights / Events Near You
+     ========================================================================== -->
+<section class="py-5" style="background: var(--bg-secondary); border-top: 1px solid var(--border-subtle);">
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+      <div>
+        <span class="text-uppercase fw-bold text-primary small tracking-wider"><i class="bi bi-geo-fill text-danger me-1"></i> Local Radar</span>
+        <h2 class="display-6 fw-bold text-white mb-0">Events Near You ({{ user_city }})</h2>
+      </div>
+      <a href="{% url 'events_discovery' %}?city={{ user_city }}" class="fw-semibold text-primary text-decoration-none">
+        Explore {{ user_city }} Events <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    <div class="row g-4">
+      {% for event in events_near %}
+        <div class="col-md-6 col-lg-3">
+          <div class="event-card">
+            <div class="event-poster-wrap">
+              <img src="{{ event.display_poster }}" alt="{{ event.title }}" class="event-poster-img" loading="lazy">
+              <span class="event-badge-category badge-cat-{{ event.category|slice:':6' }}">{{ event.category }}</span>
+              <span class="badge-fee {% if event.is_free %}bg-success text-white{% else %}bg-dark text-white{% endif %}">
+                {{ event.display_fee }}
+              </span>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+              <div class="small text-muted mb-1 text-truncate">{{ event.college.name }}</div>
+              <h6 class="fw-bold mb-2">
+                <a href="{% url 'event_detail' event.id %}" class="text-white text-decoration-none">
+                  {{ event.title }}
+                </a>
+              </h6>
+              <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center small text-muted" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                <span><i class="bi bi-calendar-check me-1"></i> {{ event.date|date:"d M" }}</span>
+                <a href="{% url 'event_detail' event.id %}" class="btn btn-sm btn-link text-primary p-0 fw-bold text-decoration-none">
+                  View <i class="bi bi-chevron-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     6. Host an Event Call-to-Action Banner
+     ========================================================================== -->
+<section class="py-5" style="background: var(--bg-primary); border-top: 1px solid var(--border-subtle);">
+  <div class="container py-2">
+    <div class="row align-items-center justify-content-between p-4 p-md-5 rounded-4 position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.16) 0%, rgba(139, 92, 246, 0.12) 100%), #0a0f1c; border: 1px solid rgba(59, 130, 246, 0.35); box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(59, 130, 246, 0.15);">
+      <div class="col-lg-8 position-relative" style="z-index: 2;">
+        <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1 mb-2">Organizer Hub</span>
+        <h3 class="display-6 fw-bold text-white mb-2">Are you organizing a college fest or symposium?</h3>
+        <p class="text-muted mb-lg-0" style="max-width: 650px;">
+          Publish your event on CampusConnect in under 2 minutes. Get nationwide student visibility, seamless digital registrations, and instant participant export.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end position-relative mt-3 mt-lg-0" style="z-index: 2;">
+        <a href="{% url 'college_register' %}" class="btn-3d-glass btn-3d-primary px-4 py-2.5">
+          <i class="bi bi-plus-circle me-2"></i> Register Your College
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function() {
+    const heroViewport = document.getElementById('heroViewport');
+    const heroPanel = document.getElementById('heroGlassPanel');
+    const statCards = document.querySelectorAll('.floating-3d-stat');
+    const heroBgParallax = document.getElementById('heroBgParallax');
+
+    if (!heroViewport) return;
+
+    let targetRotX = 0;
+    let targetRotY = 0;
+    let currentRotX = 0;
+    let currentRotY = 0;
+    let bgMoveX = 0;
+    let bgMoveY = 0;
+    let currentBgX = 0;
+    let currentBgY = 0;
+
+    heroViewport.addEventListener('mousemove', (e) => {
+      const rect = heroViewport.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+      const y = (e.clientY - rect.top) / rect.height - 0.5; // -0.5 to 0.5
+
+      // Subtle, smooth 3D tilt
+      targetRotX = -y * 12; // -6 to 6 deg
+      targetRotY = x * 14;  // -7 to 7 deg
+
+      // Subtle background parallax: moves in opposite direction
+      bgMoveX = -x * 24; // opposite direction
+      bgMoveY = -y * 20; // opposite direction
+
+      // Shift floating stats based on depth attribute
+      statCards.forEach(stat => {
+        const depth = parseFloat(stat.getAttribute('data-depth')) || 1.2;
+        const statX = x * depth * 22;
+        const statY = y * depth * 20;
+        const statRotX = -y * depth * 14;
+        const statRotY = x * depth * 16;
+        stat.style.transform = `translate3d(${statX.toFixed(1)}px, ${statY.toFixed(1)}px, ${depth * 25}px) rotateX(${statRotX.toFixed(1)}deg) rotateY(${statRotY.toFixed(1)}deg)`;
+      });
+    }, { passive: true });
+
+    heroViewport.addEventListener('mouseleave', () => {
+      targetRotX = 0;
+      targetRotY = 0;
+      bgMoveX = 0;
+      bgMoveY = 0;
+
+      statCards.forEach(stat => {
+        stat.style.transform = '';
+      });
+    });
+
+    function renderLoop() {
+      // Smooth lerp
+      currentRotX += (targetRotX - currentRotX) * 0.1;
+      currentRotY += (targetRotY - currentRotY) * 0.1;
+      currentBgX += (bgMoveX - currentBgX) * 0.08;
+      currentBgY += (bgMoveY - currentBgY) * 0.08;
+
+      if (heroPanel) {
+        heroPanel.style.transform = `perspective(1200px) rotateX(${currentRotX.toFixed(2)}deg) rotateY(${currentRotY.toFixed(2)}deg)`;
+      }
+
+      if (heroBgParallax) {
+        heroBgParallax.style.transform = `translate3d(${currentBgX.toFixed(1)}px, ${currentBgY.toFixed(1)}px, 0)`;
+      }
+
+      requestAnimationFrame(renderLoop);
+    }
+    renderLoop();
+
+    // Compact navbar on scroll
+    const navbar = document.getElementById('mainNavbar');
+    if (navbar) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 40) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      }, { passive: true });
+    }
+  })();
+</script>
+{% endblock %}

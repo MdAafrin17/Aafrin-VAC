@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}College Admin Registration | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <div class="card rounded-4 p-4 p-md-5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 35px rgba(99, 102, 241, 0.15);">
+        <div class="text-center mb-4">
+          <div class="brand-logo-icon mx-auto mb-3" style="width: 52px; height: 52px; font-size: 1.6rem;">
+            <i class="bi bi-building-add"></i>
+          </div>
+          <h2 class="h3 fw-bold mb-1 text-white">Host College Registration</h2>
+          <p class="text-muted small">Register your institution to publish events, manage registrations & reach students nationwide</p>
+        </div>
+
+        <form method="POST">
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger py-2 small mb-3">
+              {{ form.non_field_errors.0 }}
+            </div>
+          {% endif %}
+
+          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;"><i class="bi bi-person-circle text-primary me-2"></i> Coordinator Details</h5>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Coordinator / Admin Name *</label>
+              {{ form.name }}
+              {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Official Email Address *</label>
+              {{ form.email }}
+              {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Contact Phone / WhatsApp *</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Password *</label>
+              {{ form.password }}
+              {% if form.password.errors %}<div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">Confirm Password *</label>
+              {{ form.confirm_password }}
+              {% if form.confirm_password.errors %}<div class="text-danger small mt-1">{{ form.confirm_password.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+
+          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;"><i class="bi bi-building text-primary me-2"></i> College / University Information</h5>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Link to Existing College Profile</label>
+              {{ form.existing_college }}
+              <div class="form-text small">If your college is already in our directory, select it above. Otherwise fill in below:</div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">New College Name</label>
+              {{ form.college_name }}
+              {% if form.college_name.errors %}<div class="text-danger small mt-1">{{ form.college_name.errors.0 }}</div>{% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">City</label>
+              {{ form.city }}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold text-muted text-uppercase">State</label>
+              {{ form.state }}
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Campus Address</label>
+              {{ form.address }}
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">Official Website</label>
+              {{ form.website }}
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-muted text-uppercase">About College / Overview</label>
+              {{ form.description }}
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button type="submit" class="btn btn-primary-gradient w-100 py-2.5 fw-bold">
+              Register College & Access Organizer Portal
+            </button>
+          </div>
+        </form>
+
+        <hr class="my-4">
+
+        <div class="text-center small text-muted">
+          Already have a college portal account? <a href="{% url 'login' %}" class="fw-semibold text-primary text-decoration-none">Sign In</a> &bull; Are you a student? <a href="{% url 'student_register' %}" class="fw-semibold text-primary text-decoration-none">Student Signup</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
