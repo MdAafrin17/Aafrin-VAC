@@ -120,3 +120,31 @@ class CampusConnectTestCase(TestCase):
         results = data.get('results', data)
         self.assertGreaterEqual(len(results), 1)
         self.assertEqual(results[0]['title'], "AI Hackathon 2026")
+
+    def test_multiple_student_registration_unique_usernames(self):
+        # Test registering first new student
+        res1 = self.client.post(reverse('student_register'), {
+            'name': 'New Student 1',
+            'email': 'new.student1@example.com',
+            'password': 'password123',
+            'confirm_password': 'password123',
+            'college_name_other': 'Campus Tech'
+        })
+        self.assertEqual(res1.status_code, 302)
+
+        # Test registering second new student (should never fail with UNIQUE constraint on username)
+        self.client.logout()
+        res2 = self.client.post(reverse('student_register'), {
+            'name': 'New Student 2',
+            'email': 'new.student2@example.com',
+            'password': 'password123',
+            'confirm_password': 'password123',
+            'college_name_other': 'Campus Tech'
+        })
+        self.assertEqual(res2.status_code, 302)
+
+        u1 = User.objects.get(email='new.student1@example.com')
+        u2 = User.objects.get(email='new.student2@example.com')
+        self.assertTrue(bool(u1.username))
+        self.assertTrue(bool(u2.username))
+        self.assertNotEqual(u1.username, u2.username)

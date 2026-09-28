@@ -7,25 +7,25 @@
 
 :root,
 [data-bs-theme="dark"] {
-  /* DARK 3D COLOR SYSTEM */
-  --bg-primary: #05070D;
-  --bg-secondary: #0A0F1C;
-  --glass-bg: rgba(255, 255, 255, 0.07);
-  --glass-border: rgba(255, 255, 255, 0.15);
+  /* CLEAN, ATTRACTIVE MODERN DARK SYSTEM */
+  --bg-primary: #070a13;
+  --bg-secondary: #0d1322;
+  --glass-bg: rgba(13, 19, 34, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.09);
   
   --accent-blue: #3B82F6;
   --accent-violet: #8B5CF6;
   --accent-cyan: #06B6D4;
   --text-white: #FFFFFF;
-  --text-muted: #A8B0C0;
+  --text-muted: #94A3B8;
 
-  /* CampusConnect Mappings */
+  /* CampusConnect Solid & Crisp Mappings for Maximum Legibility */
   --bg-main: var(--bg-primary);
-  --bg-card: rgba(10, 15, 28, 0.76);
-  --bg-surface: rgba(10, 15, 28, 0.88);
-  --bg-surface-hover: rgba(20, 28, 48, 0.9);
+  --bg-card: #0d1322;
+  --bg-surface: #111827;
+  --bg-surface-hover: #1e293b;
   --bg-glass: var(--glass-bg);
-  --bg-input: rgba(10, 15, 28, 0.85);
+  --bg-input: #111827;
 
   /* Primary Accent: Electric Blue / Violet Gradient */
   --primary: var(--accent-blue);
@@ -43,18 +43,18 @@
 
   /* Borders & Dividers */
   --border-subtle: var(--glass-border);
-  --border-medium: rgba(255, 255, 255, 0.22);
-  --border-glow: rgba(59, 130, 246, 0.55);
+  --border-medium: rgba(255, 255, 255, 0.14);
+  --border-glow: rgba(59, 130, 246, 0.4);
 
   /* Typography Colors */
   --text-main: var(--text-white);
-  --text-body: #E5E7EB;
-  --text-subtle: #6B7280;
+  --text-body: #E2E8F0;
+  --text-subtle: #64748B;
 
   /* Elevation Shadows & Glows */
-  --card-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.75), 0 0 0 1px var(--glass-border);
-  --card-shadow-hover: 0 25px 50px -10px rgba(0, 0, 0, 0.88), 0 0 30px rgba(59, 130, 246, 0.35), 0 0 0 1px rgba(59, 130, 246, 0.55);
-  --glow-primary: 0 0 25px rgba(59, 130, 246, 0.45);
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--glass-border);
+  --card-shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(59, 130, 246, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.45);
+  --glow-primary: 0 0 25px rgba(59, 130, 246, 0.35);
 
   /* Border Radii */
   --radius-sm: 0.5rem;
@@ -76,7 +76,7 @@
   --bg-card: #ffffff;
   --bg-surface: #f1f5f9;
   --bg-surface-hover: #e2e8f0;
-  --bg-glass: rgba(255, 255, 255, 0.88);
+  --bg-glass: rgba(255, 255, 255, 0.95);
   --bg-input: #ffffff;
   --border-subtle: #e2e8f0;
   --border-medium: #cbd5e1;
@@ -90,7 +90,7 @@
 }
 
 /* ==========================================================================
-   Base Elements & Global Layout
+   Base Elements & Global Layout (Simple, Attractive, Clean Dark Canvas)
    ========================================================================== */
 html {
   background-color: var(--bg-main);
@@ -102,6 +102,11 @@ body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-body);
   background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(at 15% 12%, rgba(59, 130, 246, 0.07) 0px, transparent 40%),
+    radial-gradient(at 85% 18%, rgba(139, 92, 246, 0.05) 0px, transparent 40%),
+    radial-gradient(at 50% 90%, rgba(6, 182, 212, 0.04) 0px, transparent 45%);
+  background-attachment: fixed;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -145,121 +150,10 @@ a:hover {
   color: #c7d2fe;
 }
 
-/* ==========================================================================
-   Interactive 3D WebGL Background Canvas & FX Pill
-   ========================================================================== */
-.bg-3d-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 0;
-  display: block;
-}
-
-.fx-3d-pill {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
-  z-index: 999;
-  background: rgba(17, 24, 39, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 9999px;
-  padding: 0.4rem 0.95rem;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: #c7d2fe;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(99, 102, 241, 0.25);
-  pointer-events: auto;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
-}
-
-.fx-3d-pill:hover {
-  transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.6);
-  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.7), 0 0 25px rgba(99, 102, 241, 0.4);
-  color: #ffffff;
-}
-
-.fx-3d-pulse {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #06b6d4;
-  box-shadow: 0 0 10px #06b6d4, 0 0 20px rgba(6, 182, 212, 0.6);
-  animation: pulseDot 2s infinite ease-in-out;
-}
-
-/* ==========================================================================
-   Ambient Animated Aurora Background Lights (Cinematic Glow)
-   ========================================================================== */
+/* 3D Background Canvas Disabled for Clean Template Readability */
+.bg-3d-canvas,
 .aurora-container {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.45;
-}
-
-.aurora-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  will-change: transform, opacity;
-}
-
-.orb-purple {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.45) 0%, rgba(99, 102, 241, 0) 70%);
-  top: -140px;
-  left: 10%;
-  animation: auroraMove1 18s ease-in-out infinite alternate;
-}
-
-.orb-cyan {
-  width: 620px;
-  height: 620px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, rgba(6, 182, 212, 0) 70%);
-  top: 35%;
-  right: -100px;
-  animation: auroraMove2 22s ease-in-out infinite alternate;
-}
-
-.orb-magenta {
-  width: 540px;
-  height: 540px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, rgba(139, 92, 246, 0) 70%);
-  bottom: -60px;
-  left: 22%;
-  animation: auroraMove3 16s ease-in-out infinite alternate;
-}
-
-@keyframes auroraMove1 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(80px, 60px) scale(1.15); }
-  100% { transform: translate(-50px, 100px) scale(0.92); }
-}
-
-@keyframes auroraMove2 {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-100px, -80px) scale(1.14); }
-  100% { transform: translate(-50px, 60px) scale(0.96); }
-}
-
-@keyframes auroraMove3 {
-  0% { transform: translate(0, 0) scale(0.95); }
-  50% { transform: translate(120px, -70px) scale(1.2); }
-  100% { transform: translate(-60px, -40px) scale(1); }
+  display: none !important;
 }
 
 /* ==========================================================================
@@ -316,22 +210,22 @@ a:hover {
    Navbar with Animated Border Beam
    ========================================================================== */
 .navbar-glass {
-  background: rgba(5, 7, 13, 0.55) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  background: rgba(7, 10, 19, 0.92) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 1030;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .navbar-glass.scrolled {
-  background: rgba(5, 7, 13, 0.9) !important;
+  background: #070a13 !important;
   padding-top: 0.6rem !important;
   padding-bottom: 0.6rem !important;
-  border-bottom-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 16px 35px -5px rgba(0, 0, 0, 0.85);
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
 .brand-glyph-3d {
@@ -561,72 +455,684 @@ a:hover {
   align-items: center;
   overflow: hidden;
   perspective: 1200px;
-  background-color: var(--bg-primary);
+  background-color: transparent;
   padding: 5rem 0 3rem;
-}
-
-/* Layer 0: The Uploaded College Building Background with Parallax */
-.hero-bg-parallax {
-  position: absolute;
-  top: -5%;
-  left: -5%;
-  width: 110%;
-  height: 110%;
-  background-image: url("/static/images/campus_bg.jpg");
-  background-size: cover;
-  background-position: center 36%;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1;
 }
 
-/* Layer 1: Dark Transparent Gradient */
+/* ==============================================================================
+   CINEMATIC 3D PRODUCT HERO PRESENTATION (APPLE / REFERENCE LUXURY SHOWCASE)
+   Central Floating College Architectural Object + Giant Environmental Typography
+   ============================================================================== */
+.cinematic-hero-section {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #060911;
+  padding: 6.5rem 1rem 5.5rem;
+  perspective: 1200px;
+  z-index: 2;
+}
+
+/* Atmospheric Studio Overhead Spotlight */
+.hero-studio-spotlight {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 950px;
+  height: 650px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.16) 0%, rgba(139, 92, 246, 0.08) 42%, transparent 72%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-ambient-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 40%, rgba(6, 9, 17, 0.75) 80%, #060911 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Giant Environmental Typography: CAMPUS (Above/Behind) & CONNECT (Below/Front) */
+.giant-env-typography {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: clamp(4.8rem, 14.5vw, 13rem);
+  line-height: 0.8;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  user-select: none;
+  pointer-events: none;
+  text-align: center;
+  width: 100%;
+  will-change: transform;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.giant-campus-text {
+  position: relative;
+  z-index: 2;
+  color: rgba(255, 255, 255, 0.13);
+  margin-bottom: -3.8vw;
+  text-shadow: 0 0 50px rgba(255, 255, 255, 0.05);
+}
+
+.giant-connect-text {
+  position: relative;
+  z-index: 6;
+  margin-top: -4.2vw;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(56, 189, 248, 0.75) 45%, rgba(99, 102, 241, 0.35) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.85));
+}
+
+/* ==============================================================================
+   CINEMATIC 3D BACKGROUND CANVAS & LUXURY DARK THEME STAGE
+   Pristine 3D College Architectural Night Background + Floating Cyber-Glass Cockpit
+   ============================================================================== */
+.hero-3d-bg-canvas {
+  position: absolute;
+  inset: -60px;
+  background-image: url('/static/images/campus_bg.jpg');
+  background-size: cover;
+  background-position: center 38%;
+  background-repeat: no-repeat;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter, clip-path;
+  z-index: 1;
+  filter: saturate(1.25) contrast(1.15) brightness(1.02);
+  transform: scale(1.07);
+  clip-path: inset(0% 0 0 0);
+}
+
+/* Ground Foundation Baseline */
+.hero-ground-foundation {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 5%, #00e5ff 25%, #38bdf8 50%, #818cf8 75%, transparent 95%);
+  box-shadow: 0 0 25px #00e5ff, 0 0 50px rgba(56, 189, 248, 0.7);
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Ground Grid Blueprint Plane */
+.hero-ground-grid {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) perspective(600px) rotateX(75deg);
+  width: 120%;
+  height: 220px;
+  background-image: 
+    linear-gradient(rgba(56, 189, 248, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.22) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at 50% 100%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 100%, black 30%, transparent 75%);
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Active Construction Laser Beam that rides the rising building edge */
+.hero-construction-beam {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  top: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.5) 20%, #ffffff 50%, rgba(0, 229, 255, 0.5) 80%, transparent 100%);
+  box-shadow: 
+    0 0 20px #00e5ff,
+    0 0 45px rgba(56, 189, 248, 0.9),
+    0 1px 8px rgba(255, 255, 255, 0.9);
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  will-change: top, opacity;
+}
+
+.hero-construction-beam::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75%;
+  height: 38px;
+  background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.45) 0%, rgba(0, 229, 255, 0.2) 40%, transparent 75%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+/* Final Completion Holographic Light Sweep */
+.hero-college-light-sweep {
+  position: absolute;
+  inset: -100px;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.05) 35%,
+    rgba(56, 189, 248, 0.35) 48%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(129, 140, 248, 0.35) 52%,
+    rgba(255, 255, 255, 0.05) 65%,
+    transparent 80%
+  );
+  transform: translateX(-150%) rotate(15deg);
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.hero-3d-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 75% 62% at 50% 46%, rgba(6, 9, 17, 0.12) 0%, rgba(6, 9, 17, 0.45) 55%, #060911 100%),
+    linear-gradient(180deg, rgba(6, 9, 17, 0.7) 0%, rgba(6, 9, 17, 0.1) 28%, rgba(6, 9, 17, 0.2) 68%, #060911 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Atmospheric Fountain Cyan Aura (Pulsing blue-cyan water radiance) */
+.hero-fountain-aura {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 520px;
+  height: 260px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 229, 255, 0.3) 0%, rgba(56, 189, 248, 0.12) 48%, transparent 75%);
+  filter: blur(45px);
+  pointer-events: none;
+  z-index: 2;
+  animation: fountainAuraPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes fountainAuraPulse {
+  0% { opacity: 0.55; transform: translateX(-50%) scale(0.94); }
+  100% { opacity: 0.95; transform: translateX(-50%) scale(1.06); }
+}
+
+/* Neoclassical Architectural Warm Amber Radiance */
+.hero-arch-radiance {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 340px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(245, 158, 11, 0.13) 0%, rgba(251, 191, 36, 0.04) 50%, transparent 75%);
+  filter: blur(55px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero-3d-bg-glow {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1050px;
+  height: 620px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(56, 189, 248, 0.18) 0%, rgba(124, 58, 237, 0.12) 45%, transparent 75%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Central Floating 3D Stage on top of 3D Background */
+.hero-floating-stage {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 1160px;
+  min-height: 590px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  margin: 1.5rem auto;
+}
+
+/* The Central Frosted Glass UI Cockpit Floating in 3D Space */
+.hero-glass-cockpit {
+  position: relative;
+  z-index: 10;
+  max-width: 800px;
+  width: 94%;
+  padding: 3rem 2.8rem;
+  border-radius: 32px;
+  background: rgba(8, 13, 24, 0.72);
+  backdrop-filter: blur(28px) saturate(220%);
+  -webkit-backdrop-filter: blur(28px) saturate(220%);
+  border: 1px solid rgba(56, 189, 248, 0.32);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.95),
+              0 0 60px rgba(56, 189, 248, 0.18),
+              inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  text-align: center;
+  transform: perspective(1000px) translateZ(40px);
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  overflow: hidden;
+}
+
+/* Glass Cockpit Reflective Sheen Sweep */
+.hero-glass-cockpit::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    135deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.04) 45%,
+    rgba(56, 189, 248, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 55%,
+    transparent 65%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  animation: cockpitSheenSweep 8s linear infinite;
+}
+
+@keyframes cockpitSheenSweep {
+  0% { transform: translateY(-30%) rotate(25deg); }
+  50% { transform: translateY(30%) rotate(25deg); }
+  100% { transform: translateY(-30%) rotate(25deg); }
+}
+
+.hero-cockpit-search {
+  position: relative;
+  z-index: 2;
+  background: rgba(6, 10, 20, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 9999px;
+  padding: 0.35rem 0.45rem 0.35rem 0.9rem;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.65), 0 0 22px rgba(56, 189, 248, 0.15);
+  max-width: 580px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.hero-cockpit-search:focus-within {
+  border-color: #38bdf8;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.65), 0 0 30px rgba(56, 189, 248, 0.35);
+}
+
+/* Symmetrical Floating 3D Telemetry Glass Cards */
+.floating-telemetry-card {
+  position: absolute;
+  width: 220px;
+  background: rgba(9, 14, 27, 0.82);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 22px;
+  padding: 1.35rem 1.25rem;
+  box-shadow: 0 22px 50px -10px rgba(0, 0, 0, 0.88),
+              0 0 25px rgba(56, 189, 248, 0.16),
+              inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 12;
+  text-align: left;
+}
+
+/* Cyber bracket corner accent on telemetry card */
+.floating-telemetry-card::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid #38bdf8;
+  border-right: 2px solid #38bdf8;
+  opacity: 0.65;
+  border-top-right-radius: 6px;
+  pointer-events: none;
+}
+
+.floating-telemetry-card:hover {
+  transform: scale(1.08) translateZ(70px) translateY(-6px);
+  border-color: rgba(56, 189, 248, 0.8);
+  box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.95),
+              0 0 40px rgba(56, 189, 248, 0.45);
+}
+
+.card-top-left {
+  top: 15px;
+  left: 20px;
+}
+
+.card-top-right {
+  top: 15px;
+  right: 20px;
+}
+
+.card-bottom-left {
+  bottom: 15px;
+  left: 20px;
+}
+
+.card-bottom-right {
+  bottom: 15px;
+  right: 20px;
+}
+
+@media (max-width: 991px) {
+  .floating-telemetry-card {
+    display: none;
+  }
+  .hero-floating-stage {
+    min-height: auto;
+  }
+  .hero-glass-cockpit {
+    transform: none;
+    padding: 2rem 1.4rem;
+  }
+}
+
+.hero-brand-headline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.2rem, 3.8vw, 3.4rem);
+  color: #ffffff;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.hero-brand-subheading {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.01em;
+}
+
+.hero-brand-supporting {
+  color: #94a3b8;
+  font-size: clamp(0.95rem, 1.15vw, 1.12rem);
+  line-height: 1.65;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Luxury Product CTAs */
+.btn-product-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 2rem;
+  border-radius: 9999px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-product-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn-product-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 40px -5px rgba(37, 99, 235, 0.8), 0 0 30px rgba(99, 102, 241, 0.4);
+  color: #ffffff !important;
+}
+
+.btn-product-secondary {
+  background: rgba(13, 19, 34, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.btn-product-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(56, 189, 248, 0.5);
+  transform: translateY(-3px);
+  color: #ffffff !important;
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.25);
+}
+
+.btn-shimmer-sweep {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-25deg);
+  transition: left 0.75s ease;
+}
+
+.btn-product-primary:hover .btn-shimmer-sweep {
+  left: 150%;
+}
+
+/* ==============================================================================
+   FLOATING BOTTOM DOCK NAVIGATION (APPLE / REFERENCE STYLE)
+   ============================================================================== */
+.bottom-dock-nav {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1040;
+  pointer-events: auto;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(10, 15, 28, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 5px 7px;
+  border-radius: 9999px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 189, 248, 0.15);
+}
+
+.dock-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none !important;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.dock-pill:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.dock-pill.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.dock-pill i {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .bottom-dock-nav {
+    bottom: 12px;
+    width: 95%;
+  }
+  .dock-container {
+    overflow-x: auto;
+    padding: 4px 6px;
+    justify-content: flex-start;
+  }
+  .dock-pill {
+    padding: 6px 12px;
+    font-size: 0.72rem;
+  }
+  .pill-top-left, .pill-top-right, .pill-bottom-left {
+    display: none;
+  }
+}
+
+/* ==============================================================================
+   Layer 0: The Uploaded College Building Major Hero Architectural Visual
+   ============================================================================== */
+.hero-bg-parallax {
+  position: absolute;
+  top: -6%;
+  left: -6%;
+  width: 112%;
+  height: 112%;
+  background-image: url("/static/images/campus_bg.jpg");
+  background-size: cover;
+  background-position: center 32%;
+  background-repeat: no-repeat;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+  opacity: 0.86;
+  filter: saturate(1.22) contrast(1.15) brightness(0.96);
+}
+
+/* Layer 1: Digital Spatial Grid Floor (Perspective Digital Campus Courtyard) */
+.hero-digital-grid {
+  position: absolute;
+  bottom: -22%;
+  left: -20%;
+  width: 140%;
+  height: 58%;
+  background-image: 
+    linear-gradient(to right, rgba(56, 189, 248, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.12) 1px, transparent 1px);
+  background-size: 45px 45px;
+  transform: perspective(650px) rotateX(66deg);
+  transform-origin: center bottom;
+  pointer-events: none;
+  z-index: 1;
+  mask-image: radial-gradient(ellipse at 50% 100%, black 25%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 100%, black 25%, transparent 75%);
+}
+
+/* Layer 2: Real-Time Architectural Cyber Scanline Beam */
+.hero-architectural-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.08) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: heroScanline 9s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+@keyframes heroScanline {
+  0% { transform: translateY(-100%); }
+  50%, 100% { transform: translateY(100%); }
+}
+
+/* Layer 3: Dark Cinematic Gradient (Preserves Building Clarity while Ensuring Readable Text) */
 .hero-layer-gradient {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(5, 7, 13, 0.72) 0%,
-    rgba(5, 7, 13, 0.40) 40%,
-    rgba(5, 7, 13, 0.60) 70%,
-    rgba(5, 7, 13, 0.98) 100%
+    rgba(5, 8, 20, 0.45) 0%,
+    rgba(5, 8, 20, 0.18) 28%,
+    rgba(5, 8, 20, 0.42) 65%,
+    rgba(5, 8, 20, 0.96) 100%
   );
   pointer-events: none;
   z-index: 2;
 }
 
-/* Layer 2: Subtle Blue/Purple Atmospheric Glow */
+/* Layer 4: Atmospheric Architectural Rim Glow (Focuses on Building Roofline & Pillars) */
 .hero-layer-glow {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse at 35% 45%,
-    rgba(59, 130, 246, 0.18) 0%,
-    rgba(139, 92, 246, 0.12) 45%,
-    transparent 75%
+    ellipse at 60% 42%,
+    rgba(56, 189, 248, 0.22) 0%,
+    rgba(147, 51, 234, 0.14) 42%,
+    transparent 78%
   );
   pointer-events: none;
-  z-index: 3;
+  z-index: 2;
 }
 
-/* Layer 3: Very Subtle Vignette */
+/* Layer 5: Edge Vignette */
 .hero-layer-vignette {
   position: absolute;
   inset: 0;
   background: radial-gradient(
     circle at center,
-    transparent 45%,
-    rgba(5, 7, 13, 0.55) 75%,
-    rgba(5, 7, 13, 0.95) 100%
+    transparent 50%,
+    rgba(5, 8, 20, 0.4) 80%,
+    rgba(5, 8, 20, 0.94) 100%
   );
   pointer-events: none;
-  z-index: 4;
+  z-index: 2;
 }
 
-/* Layer 4: Glass Reflection Sheen */
+/* Layer 6: Glass Reflection Sheen */
 .hero-layer-sheen {
   position: absolute;
   inset: 0;
@@ -634,32 +1140,31 @@ a:hover {
     125deg,
     transparent 0%,
     rgba(255, 255, 255, 0.02) 40%,
-    rgba(6, 182, 212, 0.04) 50%,
+    rgba(6, 182, 212, 0.05) 50%,
     transparent 60%
   );
   pointer-events: none;
-  z-index: 5;
+  z-index: 2;
 }
 
-/* Layer 5: Foreground 3D Content Container */
+/* Layer 7: Foreground 3D Content Container */
 .hero-3d-container {
   position: relative;
   z-index: 10;
   transform-style: preserve-3d;
 }
 
-/* 3D Glass Command Panel (positioned slightly left/center) */
+/* 3D Glass Command Panel (Optical Depth + Specular Reflections) */
 .hero-3d-glass-panel {
   position: relative;
-  background: rgba(5, 7, 13, 0.68);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(13, 19, 34, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 28px;
   padding: 2.75rem 2.5rem;
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.85),
-              0 0 35px rgba(59, 130, 246, 0.18),
-              inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85),
+              0 0 35px rgba(56, 189, 248, 0.12);
   transform-style: preserve-3d;
   will-change: transform;
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
@@ -668,11 +1173,77 @@ a:hover {
 .panel-glow-corner {
   position: absolute;
   top: -1px;
-  left: 20%;
-  width: 60%;
+  left: 15%;
+  width: 70%;
   height: 2px;
   background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
-  box-shadow: 0 0 15px #38bdf8;
+  box-shadow: 0 0 18px #38bdf8;
+}
+
+/* Digital Campus Gateway HUD */
+.hero-campus-hud {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(10, 17, 34, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 0.45rem 1.15rem;
+  border-radius: 9999px;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateZ(25px);
+}
+
+.hud-status-beacon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+}
+
+.beacon-core {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.beacon-ping {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid #10b981;
+  animation: beaconPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.75;
+}
+
+@keyframes beaconPing {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.hud-title {
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.hud-sep {
+  color: #38bdf8;
+  opacity: 0.6;
+  font-weight: 700;
+}
+
+.hud-coords {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+  text-transform: uppercase;
 }
 
 .hero-pill-badge {
@@ -1014,25 +1585,83 @@ a:hover {
    Deep 3D Glass Event Cards
    ========================================================================== */
 .event-card {
-  background: rgba(10, 15, 28, 0.75);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 22px;
+  background: #0d1322;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
   overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
-  box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.7);
   display: flex;
   flex-direction: column;
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.event-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.18) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 1;
 }
 
 .event-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.88), 0 0 30px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  border-color: rgba(59, 130, 246, 0.6);
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 25px 55px -10px rgba(0, 0, 0, 0.9), 0 0 35px rgba(56, 189, 248, 0.3);
+  border-color: rgba(56, 189, 248, 0.55);
+  background: #111a2e;
+}
+
+.event-card:hover::before {
+  opacity: 1;
+}
+
+.event-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+  z-index: 2;
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease;
+}
+
+.event-card:hover .event-card-body {
+  transform: translateZ(18px);
+}
+
+.btn-event-view-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.85) 0%, rgba(79, 70, 229, 0.85) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+  text-decoration: none !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateZ(10px);
+}
+
+.btn-event-view-cta:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
+  transform: translateZ(22px) translateY(-2px);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.6);
+  border-color: rgba(255, 255, 255, 0.45);
 }
 
 .event-poster-wrap {
@@ -1109,25 +1738,22 @@ a:hover {
    3D Floating College Directory Cards
    ========================================================================== */
 .college-card {
-  background: rgba(10, 15, 28, 0.72);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #0d1322;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 1.5rem;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
   text-decoration: none;
   color: inherit;
   display: block;
-  transform-style: preserve-3d;
 }
 
 .college-card:hover {
-  border-color: rgba(6, 182, 212, 0.6);
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.85), 0 0 25px rgba(6, 182, 212, 0.25);
-  background: rgba(15, 22, 40, 0.85);
+  border-color: rgba(6, 182, 212, 0.5);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(6, 182, 212, 0.2);
+  background: #111a2e;
 }
 
 .college-logo-img {
@@ -1142,31 +1768,28 @@ a:hover {
 }
 
 .college-card:hover .college-logo-img {
-  transform: scale(1.08) rotate(2deg);
+  transform: scale(1.05);
 }
 
 /* ==========================================================================
-   3D "How CampusConnect Works" Steps
+   "How CampusConnect Works" Steps
    ========================================================================== */
 .step-card-3d {
   position: relative;
-  background: rgba(10, 15, 28, 0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #0d1322;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   padding: 2.25rem 1.85rem;
   height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
   overflow: hidden;
-  box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
 .step-card-3d:hover {
-  transform: translateY(-8px) scale(1.02);
-  border-color: rgba(139, 92, 246, 0.6);
-  box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.85), 0 0 30px rgba(139, 92, 246, 0.28);
+  transform: translateY(-6px);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(139, 92, 246, 0.2);
 }
 
 .step-num-watermark {
@@ -2104,5 +2727,707 @@ footer a:hover {
   color: #ffffff;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+}
+
+/* ==============================================================================
+   CAMPUSCONNECT 2026 PREMIUM 3D COMPONENT SUITE
+   ============================================================================== */
+
+/* Hero Title Words */
+.hero-word-discover {
+  display: block;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 255, 255, 0.3);
+}
+
+.hero-word-participate {
+  display: block;
+  background: linear-gradient(135deg, #06b6d4 0%, #38bdf8 50%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.5));
+}
+
+/* Hero Metrics Capsule */
+.hero-metrics-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 0.65rem 1.6rem;
+  border-radius: 9999px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateZ(25px);
+}
+
+.metric-segment {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.metric-num {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #38bdf8;
+  letter-spacing: -0.02em;
+}
+
+.metric-lbl {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metric-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Floating Event Cards in Hero */
+.hero-3d-event-card {
+  position: relative;
+  background: rgba(13, 19, 34, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 1.25rem 1.4rem;
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.7);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.hero-3d-event-card:hover {
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 20px 45px -10px rgba(56, 189, 248, 0.3), 0 0 25px rgba(129, 140, 248, 0.2);
+}
+
+.hero-card-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+/* Bookmark / Save Event Button */
+.event-save-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e2e8f0;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.event-save-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.7);
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+.event-save-btn.is-saved {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* ==============================================================================
+   COLLEGE NETWORK SECTION: "ONE CAMPUS NETWORK. COUNTLESS OPPORTUNITIES."
+   ============================================================================== */
+.network-visualization-stage {
+  position: relative;
+  background: radial-gradient(circle at center, rgba(30, 58, 138, 0.15) 0%, rgba(5, 7, 13, 0.8) 70%);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 32px;
+  padding: 3rem 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.9), inset 0 0 50px rgba(56, 189, 248, 0.08);
+}
+
+.network-svg-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.network-svg-layer path {
+  stroke-dasharray: 8, 6;
+  animation: networkEnergyFlow 14s linear infinite;
+}
+
+@keyframes networkEnergyFlow {
+  from { stroke-dashoffset: 140; }
+  to { stroke-dashoffset: 0; }
+}
+
+.network-grid-container {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (max-width: 991px) {
+  .network-grid-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.network-center-hub {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.75) 0%, rgba(88, 28, 135, 0.75) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(56, 189, 248, 0.6);
+  border-radius: 28px;
+  padding: 2.25rem 2rem;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(56, 189, 248, 0.35), inset 0 0 30px rgba(255, 255, 255, 0.1);
+  position: relative;
+  transform-style: preserve-3d;
+  animation: hubPulse 4s ease-in-out infinite;
+}
+
+@keyframes hubPulse {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(56, 189, 248, 0.35), inset 0 0 30px rgba(255, 255, 255, 0.1);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 65px rgba(168, 85, 247, 0.5), inset 0 0 40px rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+.network-node-card {
+  background: #0d1322;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  display: block;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.network-node-card:hover {
+  border-color: rgba(56, 189, 248, 0.6);
+  background: #111a2e;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
+.network-node-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+
+/* ==============================================================================
+   FEATURE SECTION (8 3D Features)
+   ============================================================================== */
+.feature-card-3d {
+  background: #0d1322;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 2rem 1.75rem;
+  height: 100%;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.feature-card-3d::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.6), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.feature-card-3d:hover {
+  transform: translateY(-5px);
+  border-color: rgba(56, 189, 248, 0.4);
+  background: #111a2e;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 189, 248, 0.18);
+}
+
+.feature-card-3d:hover::before {
+  opacity: 1;
+}
+
+.feature-icon-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card-3d:hover .feature-icon-box {
+  transform: scale(1.1) rotate(4deg);
+  box-shadow: 0 12px 28px rgba(56, 189, 248, 0.4);
+}
+
+/* ==============================================================================
+   LOCATION RADAR (Events Around You)
+   ============================================================================== */
+.location-radar-card {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  text-decoration: none !important;
+}
+
+.location-radar-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 7, 13, 0.2) 0%, rgba(5, 7, 13, 0.88) 85%);
+  transition: background 0.3s ease;
+}
+
+.location-radar-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.25);
+}
+
+.location-radar-card:hover::before {
+  background: linear-gradient(180deg, rgba(5, 7, 13, 0.1) 0%, rgba(5, 7, 13, 0.95) 85%);
+}
+
+.location-card-content {
+  position: relative;
+  z-index: 2;
+}
+
+.location-badge-events {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #7dd3fc;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+/* ==============================================================================
+   CAMPUSCONNECT 3D FUTURISTIC ECOSYSTEM UPGRADE
+   Navbar, 3D Hero Particles, Interactive Campus Radar, 3D Event Cards, Post Studio
+   ============================================================================== */
+
+/* Navbar Dynamic Glass States */
+.navbar-glass {
+  transition: background-color 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, padding 0.3s ease;
+}
+
+.navbar-glass.navbar-transparent-hero {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+
+.navbar-glass.navbar-scrolled {
+  background: rgba(6, 10, 20, 0.92) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.24) !important;
+  box-shadow: 0 10px 35px -10px rgba(0, 0, 0, 0.85), 0 0 25px rgba(56, 189, 248, 0.1) !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+/* Hero Particles Canvas & Volumetric Light Rays */
+#heroParticlesCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hero-volumetric-rays {
+  position: absolute;
+  top: -20%;
+  left: 10%;
+  width: 130%;
+  height: 130%;
+  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
+              repeating-linear-gradient(45deg, rgba(56, 189, 248, 0.02) 0px, transparent 40px, rgba(124, 58, 237, 0.015) 80px);
+  pointer-events: none;
+  z-index: 2;
+  transform: rotate(-12deg);
+  animation: raysSweep 18s ease-in-out infinite alternate;
+}
+
+@keyframes raysSweep {
+  0% { transform: rotate(-14deg) translateY(-20px); opacity: 0.7; }
+  100% { transform: rotate(-10deg) translateY(20px); opacity: 1; }
+}
+
+/* ==============================================================================
+   INTERACTIVE 3D CAMPUS RADAR & CITY MAP SECTION
+   ============================================================================== */
+.campus-radar-container {
+  position: relative;
+  width: 100%;
+  border-radius: 28px;
+  background: radial-gradient(ellipse at 50% 40%, rgba(14, 22, 42, 0.95) 0%, #060911 100%);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+  padding: 2.5rem 1.5rem;
+}
+
+.radar-viewport {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  perspective: 1100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.radar-3d-plane {
+  position: absolute;
+  width: 860px;
+  height: 860px;
+  border-radius: 50%;
+  border: 2px solid rgba(56, 189, 248, 0.25);
+  background: 
+    radial-gradient(circle at center, rgba(14, 165, 233, 0.1) 0%, transparent 70%),
+    repeating-radial-gradient(circle at center, transparent 0, transparent 75px, rgba(56, 189, 248, 0.15) 76px, transparent 77px),
+    linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  transform: rotateX(60deg) scale(0.95);
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.radar-sweep-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(56, 189, 248, 0.4) 0deg, rgba(56, 189, 248, 0.0) 65deg, transparent 66deg);
+  animation: radarRotate 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes radarRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.radar-node-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.radar-node-marker:hover,
+.radar-node-marker.is-active {
+  transform: translate(-50%, -50%) scale(1.18);
+}
+
+.node-beacon-ring {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.35);
+  border: 2px solid #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px #38bdf8;
+}
+
+.node-beacon-ring::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(56, 189, 248, 0.7);
+  animation: beaconPulse 2s infinite;
+}
+
+@keyframes beaconPulse {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+.node-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.node-label-box {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 16, 30, 0.9);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 12px;
+  padding: 0.35rem 0.75rem;
+  white-space: nowrap;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.85), 0 0 14px rgba(56, 189, 248, 0.2);
+  transition: all 0.25s ease;
+  pointer-events: none;
+}
+
+.radar-node-marker.is-active .node-label-box {
+  background: rgba(37, 99, 235, 0.95);
+  border-color: #60a5fa;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.7);
+}
+
+.radar-info-drawer {
+  background: rgba(10, 16, 30, 0.8);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75);
+  transition: all 0.35s ease;
+}
+
+/* ==============================================================================
+   HORIZONTAL SCROLLING EVENT DISCOVERY CAROUSEL
+   ============================================================================== */
+.event-carousel-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.event-carousel-track {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 1rem 0.5rem 1.8rem 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.event-carousel-track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.event-carousel-track::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+}
+
+.event-carousel-track::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  border-radius: 9999px;
+}
+
+.event-carousel-item {
+  flex: 0 0 350px;
+  max-width: 350px;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 767px) {
+  .event-carousel-item {
+    flex: 0 0 84vw;
+    max-width: 84vw;
+  }
+}
+
+.carousel-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.carousel-nav-btn:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #60a5fa;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.6);
+  transform: scale(1.08);
+}
+
+/* ==============================================================================
+   3D EVENT CARDS WITH GLARE & TILT
+   ============================================================================== */
+.event-card {
+  position: relative;
+  background: rgba(11, 17, 32, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.85),
+              0 0 25px rgba(56, 189, 248, 0.08);
+  transform-style: preserve-3d;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  will-change: transform;
+}
+
+.event-card:hover {
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.95),
+              0 0 35px rgba(56, 189, 248, 0.25);
+}
+
+.event-card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+}
+
+.event-card:hover .event-card-glare {
+  opacity: 1;
+}
+
+/* ==============================================================================
+   POST EVENT PAGE 3D STUDIO
+   ============================================================================== */
+.post-studio-panel {
+  background: rgba(10, 16, 30, 0.82);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 28px;
+  padding: 2.5rem;
+  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(56, 189, 248, 0.12);
+}
+
+.form-control-cyber,
+.form-select-cyber {
+  background: rgba(6, 10, 20, 0.75) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.25s ease !important;
+}
+
+.form-control-cyber:focus,
+.form-select-cyber:focus {
+  background: rgba(8, 14, 28, 0.9) !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35) !important;
+  outline: none !important;
+}
+
+.preview-card-3d-sticky {
+  position: sticky;
+  top: 100px;
+  perspective: 1000px;
+}
+
+/* ==============================================================================
+   ACCESSIBILITY: PREFERS-REDUCED-MOTION SUPPORT
+   ============================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .hero-3d-bg-canvas,
+  .hero-glass-cockpit,
+  .floating-telemetry-card,
+  .hero-volumetric-rays,
+  .hero-fountain-aura,
+  .radar-sweep-beam,
+  .node-beacon-ring::after {
+    animation: none !important;
+    transition: opacity 0.4s ease !important;
+  }
 }
 

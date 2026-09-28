@@ -13,9 +13,9 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
-from .models import User, College, Event, Registration
+from .models import User, College, Event, Registration, SavedEvent, Notification, StudentProfile, EventCategory
 from .forms import StudentRegistrationForm, CollegeAdminRegistrationForm, LoginForm, EventForm
-from .serializers import CollegeSerializer, EventSerializer, RegistrationSerializer, UserSerializer
+from .serializers import CollegeSerializer, EventSerializer, RegistrationSerializer, UserSerializer, SavedEventSerializer, NotificationSerializer
 from .permissions import IsCollegeAdminOrReadOnly, IsStudentUser
 
 
@@ -33,12 +33,26 @@ def home_view(request):
     if request.user.is_authenticated and request.user.college and request.user.college.city:
         user_city = request.user.college.city
     
-    events_near = Event.objects.filter(is_published=True, city__iexact=user_city, date__gte=today).select_related('college')[:4]
+    events_near = Event.objects.filter(is_published=True, date__gte=today).filter(
+        Q(city__iexact=user_city) | Q(college__city__iexact=user_city)
+    ).select_related('college')[:6]
     if not events_near.exists():
-        events_near = Event.objects.filter(is_published=True, date__gte=today).select_related('college')[:4]
+        events_near = Event.objects.filter(is_published=True, date__gte=today).select_related('college')[:6]
 
-    featured_colleges = College.objects.annotate(num_events=Count('events')).order_by('-num_events')[:6]
-    cities = Event.objects.values_list('city', flat=True).distinct()
+    # Trending Events (sorted by registrations & upcoming date)
+    trending_events = Event.objects.filter(is_published=True, date__gte=today).annotate(
+        confirmed_regs=Count('registrations', filter=Q(registrations__status='CONFIRMED'))
+    ).order_by('-confirmed_regs', 'date').select_related('college')[:6]
+    if not trending_events.exists():
+        trending_events = upcoming_events
+
+    # Recently Added Events
+    recently_added = Event.objects.filter(is_published=True).order_by('-created_at').select_related('college')[:6]
+
+    featured_colleges = College.objects.annotate(num_events=Count('events')).order_by('-num_events')
+    college_cities = sorted(list(set(c for c in College.objects.values_list('city', flat=True).distinct() if c and c.strip())))
+    event_cities = list(Event.objects.values_list('city', flat=True).distinct())
+    all_cities = sorted(list(set(c for c in event_cities + college_cities if c and c.strip())))
     categories = [cat[0] for cat in Event.CATEGORY_CHOICES]
 
     total_events = Event.objects.filter(is_published=True).count()
@@ -48,8 +62,13 @@ def home_view(request):
     context = {
         'upcoming_events': upcoming_events,
         'events_near': events_near,
-        'featured_colleges': featured_colleges,
-        'cities': sorted(list(set(cities))),
+        'trending_events': trending_events,
+        'recently_added': recently_added,
+        'featured_colleges': featured_colleges[:6],
+        'popular_colleges': featured_colleges[:8],
+        'all_colleges': featured_colleges,
+        'college_cities': college_cities,
+        'cities': all_cities,
         'categories': categories,
         'user_city': user_city,
         'total_events': total_events,
@@ -83,6 +102,9 @@ def events_discovery_view(request):
                 Q(category__icontains=w) |
                 Q(city__icontains=w) |
                 Q(college__name__icontains=w) |
+                Q(college__city__icontains=w) |
+                Q(college__state__icontains=w) |
+                Q(college__address__icontains=w) |
                 Q(state__icontains=w)
             )
         events = events.filter(q_obj)
@@ -91,10 +113,10 @@ def events_discovery_view(request):
         events = events.filter(category__iexact=category)
 
     if city and city != 'All':
-        events = events.filter(city__iexact=city)
+        events = events.filter(Q(city__iexact=city) | Q(college__city__iexact=city))
 
     if state and state != 'All':
-        events = events.filter(state__iexact=state)
+        events = events.filter(Q(state__iexact=state) | Q(college__state__iexact=state))
 
     if date_filter == 'today':
         events = events.filter(date=today)
@@ -122,8 +144,13 @@ def events_discovery_view(request):
     else:
         events = events.order_by('date', 'start_time')
 
-    all_cities = sorted(list(set(Event.objects.values_list('city', flat=True).distinct())))
-    all_states = sorted(list(set(Event.objects.values_list('state', flat=True).distinct())))
+    event_cities = list(Event.objects.values_list('city', flat=True).distinct())
+    college_cities = list(College.objects.values_list('city', flat=True).distinct())
+    all_cities = sorted(list(set(c for c in event_cities + college_cities if c and c.strip())))
+
+    event_states = list(Event.objects.values_list('state', flat=True).distinct())
+    college_states = list(College.objects.values_list('state', flat=True).distinct())
+    all_states = sorted(list(set(s for s in event_states + college_states if s and s.strip())))
     categories = [cat[0] for cat in Event.CATEGORY_CHOICES]
 
     paginator = Paginator(events, 9)
@@ -145,6 +172,61 @@ def events_discovery_view(request):
         'total_count': events.count(),
     }
     return render(request, 'events/discovery.html', context)
+
+
+def colleges_list_view(request):
+    """Explore Colleges Directory by Location and Search"""
+    query = request.GET.get('q', '').strip()
+    city = request.GET.get('city', '').strip()
+    state = request.GET.get('state', '').strip()
+    sort_by = request.GET.get('sort', 'events_desc')
+
+    colleges = College.objects.annotate(num_events=Count('events'))
+
+    if query:
+        words = query.split()
+        q_obj = Q()
+        for w in words:
+            q_obj |= (
+                Q(name__icontains=w) |
+                Q(city__icontains=w) |
+                Q(state__icontains=w) |
+                Q(address__icontains=w) |
+                Q(description__icontains=w)
+            )
+        colleges = colleges.filter(q_obj)
+
+    if city and city != 'All':
+        colleges = colleges.filter(city__iexact=city)
+
+    if state and state != 'All':
+        colleges = colleges.filter(state__iexact=state)
+
+    if sort_by == 'name_asc':
+        colleges = colleges.order_by('name')
+    elif sort_by == 'city_asc':
+        colleges = colleges.order_by('city', 'name')
+    else:
+        colleges = colleges.order_by('-num_events', 'name')
+
+    college_cities = sorted(list(set(c for c in College.objects.values_list('city', flat=True).distinct() if c and c.strip())))
+    college_states = sorted(list(set(s for s in College.objects.values_list('state', flat=True).distinct() if s and s.strip())))
+
+    paginator = Paginator(colleges, 9)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'colleges': page_obj,
+        'query': query,
+        'selected_city': city,
+        'selected_state': state,
+        'selected_sort': sort_by,
+        'cities': college_cities,
+        'states': college_states,
+        'total_count': colleges.count(),
+    }
+    return render(request, 'colleges/list.html', context)
 
 
 def event_detail_view(request, pk):
@@ -285,9 +367,32 @@ def logout_view(request):
 
 @login_required
 def student_dashboard_view(request):
-    """9. Student Dashboard"""
+    """9. Student Dashboard with Registrations, Saved Events, and Profile Management"""
     if not request.user.is_student:
         return redirect('college_dashboard')
+
+    profile, _ = StudentProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST' and request.POST.get('action') == 'update_profile':
+        profile.department = request.POST.get('department', '').strip()
+        profile.year_of_study = request.POST.get('year_of_study', '').strip()
+        profile.roll_number = request.POST.get('roll_number', '').strip()
+        profile.skills = request.POST.get('skills', '').strip()
+        profile.bio = request.POST.get('bio', '').strip()
+        profile.github_url = request.POST.get('github_url', '').strip()
+        profile.linkedin_url = request.POST.get('linkedin_url', '').strip()
+        profile.save()
+
+        user_name = request.POST.get('name', '').strip()
+        user_phone = request.POST.get('phone', '').strip()
+        if user_name:
+            request.user.name = user_name
+        if user_phone:
+            request.user.phone = user_phone
+        request.user.save()
+
+        messages.success(request, "Student profile updated successfully!")
+        return redirect('student_dashboard')
 
     today = timezone.localdate()
     registrations = Registration.objects.filter(student=request.user).select_related('event', 'event__college').order_by('-registered_at')
@@ -295,30 +400,68 @@ def student_dashboard_view(request):
     upcoming_regs = registrations.filter(status='CONFIRMED', event__date__gte=today)
     past_regs = registrations.filter(event__date__lt=today)
     
+    saved_events = SavedEvent.objects.filter(user=request.user).select_related('event', 'event__college').order_by('-saved_at')
+
     recommended_events = Event.objects.filter(
         is_published=True, date__gte=today
     ).exclude(registrations__student=request.user).order_by('?')[:4]
 
     context = {
+        'profile': profile,
         'registrations': registrations,
         'upcoming_regs': upcoming_regs,
         'past_regs': past_regs,
+        'saved_events': saved_events,
         'total_registrations': registrations.filter(status='CONFIRMED').count(),
+        'total_saved': saved_events.count(),
         'recommended_events': recommended_events,
     }
     return render(request, 'dashboard/student.html', context)
 
 
 @login_required
+def toggle_save_event_view(request, pk):
+    """Save or un-save an event for the student."""
+    event = get_object_or_404(Event, pk=pk)
+    saved_obj = SavedEvent.objects.filter(user=request.user, event=event).first()
+    
+    if saved_obj:
+        saved_obj.delete()
+        saved = False
+        msg = f"'{event.title}' removed from saved events."
+    else:
+        SavedEvent.objects.create(user=request.user, event=event)
+        saved = True
+        msg = f"'{event.title}' saved to your watchlist!"
+        
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or 'application/json' in request.headers.get('accept', ''):
+        return JsonResponse({'status': 'ok', 'saved': saved, 'message': msg, 'event_id': event.id})
+        
+    messages.success(request, msg)
+    next_url = request.POST.get('next') or request.META.get('HTTP_REFERER') or 'home'
+    return redirect(next_url)
+
+
+@login_required
+def mark_notification_read_view(request, pk):
+    """Mark a notification as read and redirect to its link if available."""
+    notif = get_object_or_404(Notification, pk=pk, user=request.user)
+    notif.is_read = True
+    notif.save()
+    if notif.link:
+        return redirect(notif.link)
+    return redirect(request.META.get('HTTP_REFERER') or 'home')
+
+
+@login_required
 def college_dashboard_view(request):
-    """8. College Admin Dashboard"""
+    """8. College Admin Dashboard with Analytics & Participant Management"""
     if not request.user.is_college_admin:
         messages.error(request, "Access denied. College administrator privileges required.")
         return redirect('student_dashboard')
 
     college = request.user.college
     if not college:
-        # Superuser or admin without college yet
         events = Event.objects.all().select_related('college').order_by('-date')
     else:
         events = Event.objects.filter(college=college).order_by('-date')
@@ -328,12 +471,22 @@ def college_dashboard_view(request):
     
     # Aggregate metrics
     total_events = events.count()
-    total_registrations = Registration.objects.filter(event__in=events, status='CONFIRMED').count()
+    all_regs = Registration.objects.filter(event__in=events)
+    total_registrations = all_regs.filter(status='CONFIRMED').count()
+    total_participants = all_regs.filter(status='CONFIRMED').values('student').distinct().count()
+
+    # Category breakdown for Chart.js
+    category_counts = list(events.values('category').annotate(count=Count('id')).order_by('-count'))
+    cat_labels = [c['category'] for c in category_counts]
+    cat_data = [c['count'] for c in category_counts]
+
+    # Events registration chart data
+    event_chart_labels = [e.title[:20] + ('...' if len(e.title) > 20 else '') for e in events[:6]]
+    event_chart_regs = [e.registered_count for e in events[:6]]
+    event_chart_capacity = [e.max_participants for e in events[:6]]
     
     # Recent registrations
-    recent_registrations = Registration.objects.filter(
-        event__in=events
-    ).select_related('student', 'event').order_by('-registered_at')[:10]
+    recent_registrations = all_regs.select_related('student', 'event').order_by('-registered_at')[:15]
 
     context = {
         'college': college,
@@ -341,7 +494,14 @@ def college_dashboard_view(request):
         'upcoming_events': upcoming_events,
         'total_events': total_events,
         'total_registrations': total_registrations,
+        'total_participants': total_participants,
         'recent_registrations': recent_registrations,
+        'all_registrations': all_regs.select_related('student', 'event').order_by('-registered_at'),
+        'cat_labels': cat_labels,
+        'cat_data': cat_data,
+        'event_chart_labels': event_chart_labels,
+        'event_chart_regs': event_chart_regs,
+        'event_chart_capacity': event_chart_capacity,
     }
     return render(request, 'dashboard/college.html', context)
 
@@ -711,3 +871,65 @@ def event_participants_api(request, pk):
         'max_participants': event.max_participants,
         'participants': serializer.data
     })
+
+
+@api_view(['POST'])
+def toggle_save_event_api(request, pk):
+    """
+    POST /api/events/<id>/save/
+    Toggle bookmark for an event.
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+    try:
+        event = Event.objects.get(pk=pk)
+    except Event.DoesNotExist:
+        return Response({'error': 'Event not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+    saved_obj = SavedEvent.objects.filter(user=request.user, event=event).first()
+    if saved_obj:
+        saved_obj.delete()
+        return Response({
+            'saved': False,
+            'message': 'Event removed from saved events.',
+            'event_id': event.id
+        }, status=status.HTTP_200_OK)
+    else:
+        SavedEvent.objects.create(user=request.user, event=event)
+        return Response({
+            'saved': True,
+            'message': 'Event saved to watchlist.',
+            'event_id': event.id
+        }, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def my_saved_events_api(request):
+    """
+    GET /api/my-saved-events/
+    Returns events saved by the authenticated user.
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    saved = SavedEvent.objects.filter(user=request.user).select_related('event', 'event__college').order_by('-saved_at')
+    serializer = SavedEventSerializer(saved, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def mark_notification_read_api(request, pk):
+    """
+    POST /api/notifications/<id>/read/
+    Marks a notification as read.
+    """
+    if not request.user.is_authenticated:
+        return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+    try:
+        notif = Notification.objects.get(pk=pk, user=request.user)
+        notif.is_read = True
+        notif.save()
+        return Response({'status': 'ok'})
+    except Notification.DoesNotExist:
+        return Response({'error': 'Notification not found.'}, status=status.HTTP_404_NOT_FOUND)

@@ -1,165 +1,378 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if is_edit %}Edit Event: {{ event.title }}{% else %}Publish New Event{% endif %} | CampusConnect{% endblock %}
+{% block title %}{% if is_edit %}Edit Event: {{ event.title }}{% else %}Publish New Event Studio{% endif %} | CampusConnect{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-9">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <a href="{% url 'college_dashboard' %}" class="small text-muted text-decoration-none mb-1 d-inline-block">
-            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
-          </a>
-          <h1 class="h3 fw-bold mb-0">{% if is_edit %}Edit Event Details{% else %}Publish New College Event{% endif %}</h1>
-        </div>
-      </div>
+  <!-- Studio Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <a href="{% url 'college_dashboard' %}" class="small text-muted text-decoration-none mb-1 d-inline-block">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+      </a>
+      <h1 class="h3 fw-bold mb-0 text-white">
+        {% if is_edit %}Edit Event: <span class="text-cyan">{{ event.title }}</span>{% else %}3D Event Publishing Studio{% endif %}
+      </h1>
+      <p class="text-muted small mb-0">Publish opportunities directly to collegiate radar across India with instant registration passes.</p>
+    </div>
 
-      <div class="card rounded-4 p-4 p-md-5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7), 0 0 35px rgba(99, 102, 241, 0.15);">
-        <form method="POST" enctype="multipart/form-data">
+    <div>
+      <span class="badge bg-primary-subtle text-cyan border border-primary-subtle rounded-pill px-3 py-1.5 small">
+        <span class="pulse-dot me-1" style="width: 6px; height: 6px; background: #00e5ff;"></span> Studio Engine Active
+      </span>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: 3D Configuration Cockpit -->
+    <div class="col-lg-7">
+      <div class="post-studio-panel">
+        <form method="POST" enctype="multipart/form-data" id="eventStudioForm">
           {% csrf_token %}
 
           {% if form.non_field_errors %}
-            <div class="alert alert-danger py-2 small mb-4">
-              {{ form.non_field_errors.0 }}
+            <div class="alert alert-danger py-2 small mb-4 rounded-3 border-0 bg-danger bg-opacity-25 text-white">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ form.non_field_errors.0 }}
             </div>
           {% endif %}
 
-          <!-- Basic Info -->
-          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
-            <i class="bi bi-info-circle text-primary me-2"></i> Basic Information
-          </h5>
-
-          <div class="row g-3 mb-4">
-            <div class="col-12">
-              <label class="form-label small fw-bold text-muted text-uppercase">Event Title *</label>
-              {{ form.title }}
-              {% if form.title.errors %}<div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted text-uppercase">Category *</label>
-              {{ form.category }}
-              {% if form.category.errors %}<div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted text-uppercase">Registration Fee (₹) *</label>
-              {{ form.registration_fee }}
-              <div class="form-text small">Enter 0 for Free entry.</div>
-              {% if form.registration_fee.errors %}<div class="text-danger small mt-1">{{ form.registration_fee.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-12">
-              <label class="form-label small fw-bold text-muted text-uppercase">Event Description *</label>
-              {{ form.description }}
-              {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>{% endif %}
-            </div>
-          </div>
-
-          <!-- Poster Image -->
-          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
-            <i class="bi bi-image text-primary me-2"></i> Event Poster / Banner
-          </h5>
-
-          <div class="row g-3 mb-4">
-            <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted text-uppercase">Upload Poster Image</label>
-              {{ form.poster }}
-              <div class="form-text small">PNG, JPG or WebP (max 5MB)</div>
-              {% if form.poster.errors %}<div class="text-danger small mt-1">{{ form.poster.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted text-uppercase">Or Direct Poster URL</label>
-              {{ form.poster_url }}
-              <div class="form-text small">Optional web image URL</div>
-              {% if form.poster_url.errors %}<div class="text-danger small mt-1">{{ form.poster_url.errors.0 }}</div>{% endif %}
-            </div>
-          </div>
-
-          <!-- Date & Time -->
-          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
-            <i class="bi bi-calendar3 text-primary me-2"></i> Schedule & Deadlines
-          </h5>
-
-          <div class="row g-3 mb-4">
-            <div class="col-md-4">
-              <label class="form-label small fw-bold text-muted text-uppercase">Event Date *</label>
-              {{ form.date }}
-              {% if form.date.errors %}<div class="text-danger small mt-1">{{ form.date.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-4">
-              <label class="form-label small fw-bold text-muted text-uppercase">Start Time *</label>
-              {{ form.start_time }}
-              {% if form.start_time.errors %}<div class="text-danger small mt-1">{{ form.start_time.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-4">
-              <label class="form-label small fw-bold text-muted text-uppercase">End Time *</label>
-              {{ form.end_time }}
-              {% if form.end_time.errors %}<div class="text-danger small mt-1">{{ form.end_time.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted text-uppercase">Registration Deadline *</label>
-              {{ form.registration_deadline }}
-              {% if form.registration_deadline.errors %}<div class="text-danger small mt-1">{{ form.registration_deadline.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted text-uppercase">Maximum Capacity (Seats) *</label>
-              {{ form.max_participants }}
-              {% if form.max_participants.errors %}<div class="text-danger small mt-1">{{ form.max_participants.errors.0 }}</div>{% endif %}
-            </div>
-          </div>
-
-          <!-- Venue & Location -->
-          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
-            <i class="bi bi-geo-alt text-primary me-2"></i> Venue & Location
-          </h5>
-
-          <div class="row g-3 mb-4">
-            <div class="col-12">
-              <label class="form-label small fw-bold text-muted text-uppercase">Campus Venue / Hall *</label>
-              {{ form.venue }}
-              {% if form.venue.errors %}<div class="text-danger small mt-1">{{ form.venue.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted text-uppercase">City *</label>
-              {{ form.city }}
-              {% if form.city.errors %}<div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>{% endif %}
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label small fw-bold text-muted text-uppercase">State *</label>
-              {{ form.state }}
-              {% if form.state.errors %}<div class="text-danger small mt-1">{{ form.state.errors.0 }}</div>{% endif %}
-            </div>
-          </div>
-
-          <!-- Rules & Guidelines -->
-          <h5 class="fw-bold mb-3 text-white border-bottom pb-2" style="border-color: var(--border-subtle) !important;">
-            <i class="bi bi-shield-check text-primary me-2"></i> Event Rules & Eligibility
-          </h5>
-
+          <!-- Section 1: Core Details -->
           <div class="mb-4">
-            {{ form.rules }}
-            <div class="form-text small">Provide team size requirements, permitted tools, prerequisites, code of conduct, etc.</div>
-            {% if form.rules.errors %}<div class="text-danger small mt-1">{{ form.rules.errors.0 }}</div>{% endif %}
+            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom border-white border-opacity-10">
+              <span class="badge bg-primary-subtle text-primary rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">01</span>
+              <h5 class="fw-bold mb-0 text-white">Core Event Details</h5>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label small fw-bold text-muted text-uppercase">Event Title *</label>
+                {{ form.title }}
+                {% if form.title.errors %}<div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase">Category *</label>
+                {{ form.category }}
+                {% if form.category.errors %}<div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase">Registration Fee (₹) *</label>
+                {{ form.registration_fee }}
+                <div class="form-text text-muted small" style="font-size: 0.75rem;">Set 0 for 100% Free entry.</div>
+                {% if form.registration_fee.errors %}<div class="text-danger small mt-1">{{ form.registration_fee.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-12">
+                <label class="form-label small fw-bold text-muted text-uppercase">Event Overview & Description *</label>
+                {{ form.description }}
+                {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
           </div>
 
-          <div class="d-flex justify-content-end gap-2">
-            <a href="{% url 'college_dashboard' %}" class="btn btn-outline-secondary px-4">Cancel</a>
-            <button type="submit" class="btn btn-primary-gradient px-5 fw-bold">
-              {% if is_edit %}Save Changes{% else %}Publish Event{% endif %}
+          <!-- Section 2: Visual Poster Banner -->
+          <div class="mb-4">
+            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom border-white border-opacity-10">
+              <span class="badge bg-info-subtle text-info rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">02</span>
+              <h5 class="fw-bold mb-0 text-white">Poster & Visual Banner</h5>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase">Upload Poster File</label>
+                {{ form.poster }}
+                <div class="form-text text-muted small" style="font-size: 0.75rem;">JPG, PNG, WebP format.</div>
+                {% if form.poster.errors %}<div class="text-danger small mt-1">{{ form.poster.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase">Or Direct Web Image URL</label>
+                {{ form.poster_url }}
+                <div class="form-text text-muted small" style="font-size: 0.75rem;">Optional external CDN / banner link.</div>
+                {% if form.poster_url.errors %}<div class="text-danger small mt-1">{{ form.poster_url.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Schedule & Deadlines -->
+          <div class="mb-4">
+            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom border-white border-opacity-10">
+              <span class="badge bg-warning-subtle text-warning rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">03</span>
+              <h5 class="fw-bold mb-0 text-white">Schedule & Participant Capacity</h5>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-bold text-muted text-uppercase">Event Date *</label>
+                {{ form.date }}
+                {% if form.date.errors %}<div class="text-danger small mt-1">{{ form.date.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label small fw-bold text-muted text-uppercase">Start Time *</label>
+                {{ form.start_time }}
+                {% if form.start_time.errors %}<div class="text-danger small mt-1">{{ form.start_time.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label small fw-bold text-muted text-uppercase">End Time *</label>
+                {{ form.end_time }}
+                {% if form.end_time.errors %}<div class="text-danger small mt-1">{{ form.end_time.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase">Registration Deadline *</label>
+                {{ form.registration_deadline }}
+                {% if form.registration_deadline.errors %}<div class="text-danger small mt-1">{{ form.registration_deadline.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase">Seat Capacity (Maximum Passes) *</label>
+                {{ form.max_participants }}
+                {% if form.max_participants.errors %}<div class="text-danger small mt-1">{{ form.max_participants.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Venue & Location -->
+          <div class="mb-4">
+            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom border-white border-opacity-10">
+              <span class="badge bg-success-subtle text-success rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">04</span>
+              <h5 class="fw-bold mb-0 text-white">Campus Venue & Location</h5>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label small fw-bold text-muted text-uppercase">Campus Venue / Hall / Lab *</label>
+                {{ form.venue }}
+                {% if form.venue.errors %}<div class="text-danger small mt-1">{{ form.venue.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase">City *</label>
+                {{ form.city }}
+                {% if form.city.errors %}<div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>{% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-muted text-uppercase">State *</label>
+                {{ form.state }}
+                {% if form.state.errors %}<div class="text-danger small mt-1">{{ form.state.errors.0 }}</div>{% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Guidelines & Rules -->
+          <div class="mb-4">
+            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom border-white border-opacity-10">
+              <span class="badge bg-purple-subtle text-purple rounded-circle p-2" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">05</span>
+              <h5 class="fw-bold mb-0 text-white">Guidelines, Eligibility & Contact</h5>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted text-uppercase">Rules & Prerequisites</label>
+              {{ form.rules }}
+              <div class="form-text text-muted small" style="font-size: 0.75rem;">Specify team sizes, required equipment, coordinator contact phone/email.</div>
+              {% if form.rules.errors %}<div class="text-danger small mt-1">{{ form.rules.errors.0 }}</div>{% endif %}
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="d-flex justify-content-end align-items-center gap-3 pt-3 border-top border-white border-opacity-10">
+            <a href="{% url 'college_dashboard' %}" class="btn btn-outline-custom rounded-pill px-4">Cancel</a>
+            <button type="submit" class="btn btn-primary-gradient rounded-pill px-5 py-2.5 fw-bold">
+              {% if is_edit %}Save Changes{% else %}Publish Event to Campus Radar{% endif %}
             </button>
           </div>
         </form>
       </div>
     </div>
+
+    <!-- Right Column: Real-time 3D Holographic Card Preview -->
+    <div class="col-lg-5">
+      <div class="preview-card-3d-sticky">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="small fw-bold text-uppercase text-cyan">
+            <i class="bi bi-eye-fill me-1"></i> 3D Hologram Preview
+          </span>
+          <span class="badge bg-dark text-muted border border-white-15 rounded-pill small" id="previewModeBadge">Live Sync</span>
+        </div>
+
+        <!-- 3D Event Card Hologram -->
+        <div class="event-card position-relative shadow-lg" id="liveEventCardPreview" style="transform-style: preserve-3d; transition: transform 0.2s ease;">
+          <div class="event-card-glare"></div>
+
+          <!-- Poster Wrapper -->
+          <div class="event-poster-wrap position-relative overflow-hidden" style="height: 200px;">
+            <img src="{% if event.display_poster %}{{ event.display_poster }}{% else %}https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80{% endif %}" 
+                 id="previewPosterImg" 
+                 alt="Event Preview" 
+                 class="event-poster-img w-100 h-100" 
+                 style="object-fit: cover;">
+            <span class="event-badge-category" id="previewCategoryBadge">Hackathon</span>
+            <span class="badge-fee bg-success text-white" id="previewFeeBadge">Free</span>
+          </div>
+
+          <!-- Card Body -->
+          <div class="event-card-body p-3.5">
+            <div class="d-flex align-items-center gap-2 mb-2 text-muted small">
+              <i class="bi bi-building text-primary"></i>
+              <span class="text-muted fw-medium text-truncate" id="previewCollegeName">{{ user.college_display_name|default:"Your College / University" }}</span>
+            </div>
+
+            <h5 class="fw-bold mb-2 text-white" id="previewTitle">
+              {% if event.title %}{{ event.title }}{% else %}InnovateX 2026: National Hackathon{% endif %}
+            </h5>
+
+            <p class="text-muted small mb-3" id="previewDesc" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; font-size: 0.84rem;">
+              {% if event.description %}{{ event.description }}{% else %}Build cutting-edge AI, Web3, and IoT solutions with top engineers from across collegiate networks.{% endif %}
+            </p>
+
+            <div class="border-top pt-3" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+              <div class="d-flex justify-content-between align-items-center small text-muted mb-2">
+                <div><i class="bi bi-calendar-event me-1 text-primary"></i> <span id="previewDate">Upcoming</span></div>
+                <div><i class="bi bi-geo-alt me-1 text-danger"></i> <span id="previewLocation">Campus Venue</span></div>
+              </div>
+
+              <div class="d-flex align-items-center justify-content-between gap-2">
+                <div class="small text-muted">
+                  <span class="fw-bold text-white" id="previewSeats">100</span> seats left
+                </div>
+                <button type="button" class="btn-event-view-cta border-0" disabled>
+                  <span>PASS PREVIEW</span> <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-3 text-muted small" style="font-size: 0.78rem;">
+          <i class="bi bi-hand-index-thumb me-1 text-cyan"></i> Tilt your mouse over the card to inspect 3D perspective.
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function() {
+    // Live Synchronize Form Input to 3D Hologram Preview
+    const titleInput = document.querySelector('input[name="title"]');
+    const categoryInput = document.querySelector('select[name="category"]');
+    const feeInput = document.querySelector('input[name="registration_fee"]');
+    const descInput = document.querySelector('textarea[name="description"]');
+    const dateInput = document.querySelector('input[name="date"]');
+    const venueInput = document.querySelector('input[name="venue"]');
+    const cityInput = document.querySelector('input[name="city"]');
+    const seatsInput = document.querySelector('input[name="max_participants"]');
+    const posterUrlInput = document.querySelector('input[name="poster_url"]');
+    const posterFileInput = document.querySelector('input[name="poster"]');
+
+    const previewTitle = document.getElementById('previewTitle');
+    const previewCategoryBadge = document.getElementById('previewCategoryBadge');
+    const previewFeeBadge = document.getElementById('previewFeeBadge');
+    const previewDesc = document.getElementById('previewDesc');
+    const previewDate = document.getElementById('previewDate');
+    const previewLocation = document.getElementById('previewLocation');
+    const previewSeats = document.getElementById('previewSeats');
+    const previewPosterImg = document.getElementById('previewPosterImg');
+
+    if (titleInput && previewTitle) {
+      titleInput.addEventListener('input', () => {
+        previewTitle.textContent = titleInput.value.trim() || 'Untitled College Event';
+      });
+    }
+
+    if (categoryInput && previewCategoryBadge) {
+      categoryInput.addEventListener('change', () => {
+        previewCategoryBadge.textContent = categoryInput.value || 'General';
+      });
+    }
+
+    if (feeInput && previewFeeBadge) {
+      feeInput.addEventListener('input', () => {
+        const val = parseFloat(feeInput.value);
+        if (isNaN(val) || val <= 0) {
+          previewFeeBadge.textContent = 'Free';
+          previewFeeBadge.className = 'badge-fee bg-success text-white';
+        } else {
+          previewFeeBadge.textContent = `₹${val}`;
+          previewFeeBadge.className = 'badge-fee bg-dark text-white';
+        }
+      });
+    }
+
+    if (descInput && previewDesc) {
+      descInput.addEventListener('input', () => {
+        previewDesc.textContent = descInput.value.trim() || 'Provide a compelling description of your event...';
+      });
+    }
+
+    if (dateInput && previewDate) {
+      dateInput.addEventListener('change', () => {
+        previewDate.textContent = dateInput.value || 'Scheduled Date';
+      });
+    }
+
+    if (cityInput && previewLocation) {
+      function updateLoc() {
+        const v = venueInput ? venueInput.value.trim() : '';
+        const c = cityInput ? cityInput.value.trim() : '';
+        previewLocation.textContent = [v, c].filter(Boolean).join(', ') || 'Campus Venue';
+      }
+      cityInput.addEventListener('input', updateLoc);
+      if (venueInput) venueInput.addEventListener('input', updateLoc);
+    }
+
+    if (seatsInput && previewSeats) {
+      seatsInput.addEventListener('input', () => {
+        previewSeats.textContent = seatsInput.value || '100';
+      });
+    }
+
+    if (posterUrlInput && previewPosterImg) {
+      posterUrlInput.addEventListener('input', () => {
+        const url = posterUrlInput.value.trim();
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+          previewPosterImg.src = url;
+        }
+      });
+    }
+
+    if (posterFileInput && previewPosterImg) {
+      posterFileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewPosterImg.src = e.target.result;
+          };
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+    }
+
+    // 3D Tilt on Live Preview Card
+    const cardPreview = document.getElementById('liveEventCardPreview');
+    if (cardPreview) {
+      cardPreview.addEventListener('mousemove', (e) => {
+        const rect = cardPreview.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+        const mouseX = Math.round(e.clientX - rect.left);
+        const mouseY = Math.round(e.clientY - rect.top);
+        cardPreview.style.setProperty('--mouse-x', `${mouseX}px`);
+        cardPreview.style.setProperty('--mouse-y', `${mouseY}px`);
+
+        cardPreview.style.transform = `perspective(1000px) translateY(-6px) scale(1.02) rotateX(${(-y * 12).toFixed(2)}deg) rotateY(${(x * 14).toFixed(2)}deg)`;
+      });
+      cardPreview.addEventListener('mouseleave', () => {
+        cardPreview.style.transform = '';
+      });
+    }
+  })();
+</script>
 {% endblock %}

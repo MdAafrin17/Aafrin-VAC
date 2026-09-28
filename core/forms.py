@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import authenticate
+from django.utils.crypto import get_random_string
 from .models import User, College, Event
 
 class StudentRegistrationForm(forms.ModelForm):
@@ -40,6 +41,13 @@ class StudentRegistrationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.role = 'STUDENT'
+        if not user.username or not user.username.strip():
+            base = user.email.split('@')[0] if user.email else 'student'
+            clean_base = "".join(c for c in base if c.isalnum() or c == '_') or 'student'
+            candidate = f"{clean_base}_{get_random_string(6)}"
+            while User.objects.filter(username=candidate).exists():
+                candidate = f"{clean_base}_{get_random_string(8)}"
+            user.username = candidate
         user.set_password(self.cleaned_data['password'])
         if commit:
             user.save()

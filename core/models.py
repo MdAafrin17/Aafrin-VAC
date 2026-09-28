@@ -85,6 +85,16 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    def save(self, *args, **kwargs):
+        if not self.username or not self.username.strip():
+            base = self.email.split('@')[0] if self.email else 'user'
+            clean_base = "".join(c for c in base if c.isalnum() or c == '_') or 'user'
+            candidate = f"{clean_base}_{get_random_string(6)}"
+            while User.objects.filter(username=candidate).exclude(pk=self.pk).exists():
+                candidate = f"{clean_base}_{get_random_string(8)}"
+            self.username = candidate
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.name} ({self.email}) - {self.get_role_display()}"
 
@@ -242,3 +252,71 @@ class Registration(models.Model):
             rand_code = uuid.uuid4().hex[:6].upper()
             self.registration_id = f"CC-{year}-{rand_code}"
         super().save(*args, **kwargs)
+
+
+class StudentProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
+    roll_number = models.CharField(max_length=50, blank=True)
+    department = models.CharField(max_length=150, blank=True)
+    year_of_study = models.CharField(max_length=30, blank=True)
+    skills = models.CharField(max_length=300, blank=True, help_text="Comma-separated skills (e.g. Python, AI, React)")
+    bio = models.TextField(blank=True)
+    github_url = models.URLField(max_length=300, blank=True)
+    linkedin_url = models.URLField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Profile: {self.user.name} ({self.user.email})"
+
+
+class EventCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True)
+    icon = models.CharField(max_length=60, default='bi-stars', help_text="Bootstrap icon class")
+    description = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name_plural = "Event Categories"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class SavedEvent(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saved_events')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='saved_by_users')
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'event'], name='unique_user_saved_event')
+        ]
+        ordering = ['-saved_at']
+
+    def __str__(self):
+        return f"{self.user.email} saved {self.event.title}"
+
+
+class Notification(models.Model):
+    TYPE_CHOICES = (
+        ('REGISTRATION', 'Registration Confirmed'),
+        ('EVENT_UPDATE', 'Event Update'),
+        ('REMINDER', 'Event Reminder'),
+        ('SYSTEM', 'Platform System'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    notification_type = models.CharField(max_length=30, choices=TYPE_CHOICES, default='SYSTEM')
+    link = models.CharField(max_length=300, blank=True, null=True)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Notification for {self.user.email}: {self.title}"

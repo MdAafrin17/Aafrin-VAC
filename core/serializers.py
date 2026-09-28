@@ -96,3 +96,33 @@ class UserSerializer(serializers.ModelSerializer):
             'college_name_other', 'phone', 'display_avatar', 'created_at'
         ]
         read_only_fields = ['id', 'created_at']
+
+
+class SavedEventSerializer(serializers.ModelSerializer):
+    event_id = serializers.IntegerField(source='event.id', read_only=True)
+    event_title = serializers.CharField(source='event.title', read_only=True)
+    event_category = serializers.CharField(source='event.category', read_only=True)
+    event_date = serializers.DateField(source='event.date', read_only=True)
+    event_venue = serializers.CharField(source='event.venue', read_only=True)
+    event_city = serializers.CharField(source='event.city', read_only=True)
+    event_fee = serializers.CharField(source='event.display_fee', read_only=True)
+    event_poster = serializers.CharField(source='event.display_poster', read_only=True)
+    college_name = serializers.CharField(source='event.college.name', read_only=True)
+
+    class Meta:
+        from .models import SavedEvent
+        model = SavedEvent
+        fields = [
+            'id', 'user', 'event', 'event_id', 'event_title', 'event_category',
+            'event_date', 'event_venue', 'event_city', 'event_fee', 'event_poster',
+            'college_name', 'saved_at'
+        ]
+        read_only_fields = ['id', 'user', 'saved_at']
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        from .models import Notification
+        model = Notification
+        fields = ['id', 'title', 'message', 'notification_type', 'link', 'is_read', 'created_at']
+        read_only_fields = ['id', 'created_at']

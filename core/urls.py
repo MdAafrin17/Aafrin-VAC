@@ -20,7 +20,8 @@ urlpatterns = [
     path('events/<int:pk>/delete/', views.event_delete_view, name='event_delete'),
     path('events/<int:pk>/export-csv/', views.export_event_participants_csv, name='event_export_csv'),
 
-    # 4. College Details Page
+    # 4. College Directory & Details Page
+    path('colleges/', views.colleges_list_view, name='colleges_list'),
     path('colleges/<int:pk>/', views.college_detail_view, name='college_detail'),
 
     # 5, 6, 7. Authentication Pages
@@ -35,9 +36,11 @@ urlpatterns = [
     path('dashboard/college/', views.college_dashboard_view, name='college_dashboard'),
     path('dashboard/student/', views.student_dashboard_view, name='student_dashboard'),
 
-    # 12. My Registrations
+    # 12. My Registrations & Save Events
     path('my-registrations/', views.my_registrations_view, name='my_registrations'),
     path('registrations/<int:pk>/cancel/', views.cancel_registration_view, name='cancel_registration'),
+    path('events/<int:pk>/save/', views.toggle_save_event_view, name='toggle_save_event'),
+    path('notifications/<int:pk>/read/', views.mark_notification_read_view, name='mark_notification_read'),
 
     # 13. About CampusConnect & 14. Contact Page
     path('about/', views.about_view, name='about'),
@@ -49,4 +52,7 @@ urlpatterns = [
     path('api/my-registrations/', views.my_registrations_api, name='api_my_registrations'),
     path('api/cancel-registration/<int:pk>/', views.cancel_registration_api, name='api_cancel_registration'),
     path('api/events/<int:pk>/participants/', views.event_participants_api, name='api_event_participants'),
+    path('api/events/<int:pk>/save/', views.toggle_save_event_api, name='api_toggle_save_event'),
+    path('api/my-saved-events/', views.my_saved_events_api, name='api_my_saved_events'),
+    path('api/notifications/<int:pk>/read/', views.mark_notification_read_api, name='api_mark_notification_read'),
 ]

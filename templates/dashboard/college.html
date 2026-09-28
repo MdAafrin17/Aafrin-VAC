@@ -36,7 +36,7 @@
 </div>
 
 <div class="container py-4">
-  <!-- KPI Metrics Grid -->
+  <!-- KPI Metrics Grid (Total Events, Total Registrations, Upcoming Events, Total Participants) -->
   <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
       <div class="stat-widget">
@@ -53,7 +53,7 @@
     <div class="col-sm-6 col-lg-3">
       <div class="stat-widget">
         <div class="stat-icon bg-success-subtle text-success">
-          <i class="bi bi-people-fill"></i>
+          <i class="bi bi-ticket-perforated-fill"></i>
         </div>
         <div>
           <div class="h3 fw-bold mb-0 text-white">{{ total_registrations }}</div>
@@ -69,19 +69,46 @@
         </div>
         <div>
           <div class="h3 fw-bold mb-0 text-white">{{ upcoming_events.count }}</div>
-          <div class="small text-muted text-uppercase fw-semibold">Active Upcoming</div>
+          <div class="small text-muted text-uppercase fw-semibold">Upcoming Events</div>
         </div>
       </div>
     </div>
 
     <div class="col-sm-6 col-lg-3">
       <div class="stat-widget">
-        <div class="stat-icon bg-info-subtle text-info">
-          <i class="bi bi-geo-alt"></i>
+        <div class="stat-icon bg-info-subtle text-cyan" style="color: #38bdf8;">
+          <i class="bi bi-people-fill"></i>
         </div>
         <div>
-          <div class="h3 fw-bold mb-0 text-white">{{ college.city|default:"All India" }}</div>
-          <div class="small text-muted text-uppercase fw-semibold">Host Hub</div>
+          <div class="h3 fw-bold mb-0 text-white">{{ total_participants }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Total Participants</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive 3D Analytics & Visual Charts Row -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-7">
+      <div class="card rounded-4 p-4 h-100" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold text-white mb-0"><i class="bi bi-bar-chart-line-fill text-primary me-2"></i> Event Registrations vs Capacity</h6>
+          <span class="badge bg-primary-subtle text-primary small">Live Analytics</span>
+        </div>
+        <div style="height: 240px; position: relative;">
+          <canvas id="eventCapacityChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card rounded-4 p-4 h-100" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold text-white mb-0"><i class="bi bi-pie-chart-fill text-purple me-2"></i> Category Breakdown</h6>
+          <span class="badge bg-purple-subtle text-purple small">All Hosted</span>
+        </div>
+        <div style="height: 240px; position: relative;" class="d-flex align-items-center justify-content-center">
+          <canvas id="categoryDistributionChart"></canvas>
         </div>
       </div>
     </div>
@@ -279,5 +306,100 @@ async function openParticipantsModal(eventId, eventTitle) {
     bodyEl.innerHTML = '<div class="alert alert-danger">An error occurred while loading participants.</div>';
   }
 }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Chart 1: Bar chart comparing registrations vs capacity
+  const barCanvas = document.getElementById('eventCapacityChart');
+  if (barCanvas) {
+    const labels = {{ event_chart_labels|safe|default:"[]" }};
+    const regs = {{ event_chart_regs|safe|default:"[]" }};
+    const caps = {{ event_chart_capacity|safe|default:"[]" }};
+
+    new Chart(barCanvas, {
+      type: 'bar',
+      data: {
+        labels: labels.length ? labels : ['No Events'],
+        datasets: [
+          {
+            label: 'Registered Students',
+            data: regs.length ? regs : [0],
+            backgroundColor: 'rgba(56, 189, 248, 0.75)',
+            borderColor: '#38bdf8',
+            borderWidth: 1,
+            borderRadius: 6
+          },
+          {
+            label: 'Max Seat Capacity',
+            data: caps.length ? caps : [100],
+            backgroundColor: 'rgba(99, 102, 241, 0.25)',
+            borderColor: 'rgba(99, 102, 241, 0.5)',
+            borderWidth: 1,
+            borderRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#94a3b8', font: { size: 10 } },
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#94a3b8', font: { size: 10 } },
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+          }
+        }
+      }
+    });
+  }
+
+  // Chart 2: Category breakdown doughnut chart
+  const pieCanvas = document.getElementById('categoryDistributionChart');
+  if (pieCanvas) {
+    const catLabels = {{ cat_labels|safe|default:"[]" }};
+    const catData = {{ cat_data|safe|default:"[]" }};
+
+    new Chart(pieCanvas, {
+      type: 'doughnut',
+      data: {
+        labels: catLabels.length ? catLabels : ['General'],
+        datasets: [{
+          data: catData.length ? catData : [1],
+          backgroundColor: [
+            'rgba(56, 189, 248, 0.8)',
+            'rgba(168, 85, 247, 0.8)',
+            'rgba(16, 185, 129, 0.8)',
+            'rgba(245, 158, 11, 0.8)',
+            'rgba(239, 68, 68, 0.8)',
+            'rgba(236, 72, 153, 0.8)'
+          ],
+          borderColor: 'rgba(15, 23, 42, 0.9)',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 10 } }
+          }
+        },
+        cutout: '65%'
+      }
+    });
+  }
+});
 </script>
 {% endblock %}

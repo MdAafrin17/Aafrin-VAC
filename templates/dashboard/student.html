@@ -13,7 +13,7 @@
           <span class="small text-muted"><i class="bi bi-mortarboard-fill text-primary me-1"></i> {{ user.college_display_name }} &bull; {{ user.email }}</span>
         </div>
       </div>
-      <div>
+      <div class="d-flex gap-2">
         <a href="{% url 'events_discovery' %}" class="btn btn-primary-gradient px-4">
           <i class="bi bi-compass me-1"></i> Explore New Events
         </a>
@@ -51,108 +51,249 @@
 
     <div class="col-sm-4">
       <div class="stat-widget">
-        <div class="stat-icon bg-secondary-subtle text-secondary">
-          <i class="bi bi-check2-all"></i>
+        <div class="stat-icon bg-danger-subtle text-danger">
+          <i class="bi bi-heart-fill"></i>
         </div>
         <div>
-          <div class="h3 fw-bold mb-0 text-white">{{ past_regs.count }}</div>
-          <div class="small text-muted text-uppercase fw-semibold">Completed Events</div>
+          <div class="h3 fw-bold mb-0 text-white">{{ total_saved }}</div>
+          <div class="small text-muted text-uppercase fw-semibold">Saved Events</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row g-4">
-    <!-- Active Registrations -->
-    <div class="col-lg-8">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold mb-0 text-white"><i class="bi bi-qr-code me-2 text-primary"></i> My Event Passes</h5>
-        <a href="{% url 'my_registrations' %}" class="small text-primary fw-semibold text-decoration-none">Manage All Passes &rarr;</a>
-      </div>
+  <!-- Dashboard Navigation Tabs -->
+  <ul class="nav nav-pills mb-4 gap-2" id="studentDashTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active rounded-pill px-4 fw-semibold" id="passes-tab" data-bs-toggle="pill" data-bs-target="#passes-content" type="button" role="tab">
+        <i class="bi bi-ticket-perforated-fill me-1"></i> My Passes ({{ registrations.count }})
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link rounded-pill px-4 fw-semibold" id="saved-tab" data-bs-toggle="pill" data-bs-target="#saved-content" type="button" role="tab">
+        <i class="bi bi-heart-fill text-danger me-1"></i> Saved Events ({{ total_saved }})
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link rounded-pill px-4 fw-semibold" id="profile-tab" data-bs-toggle="pill" data-bs-target="#profile-content" type="button" role="tab">
+        <i class="bi bi-person-gear me-1"></i> Student Profile
+      </button>
+    </li>
+  </ul>
 
-      <div class="d-flex flex-column gap-3 mb-5">
-        {% for reg in registrations %}
-          <div class="card rounded-4 p-3.5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
-            <div class="row align-items-center g-3">
-              <div class="col-md-3">
-                <img src="{{ reg.event.display_poster }}" alt="{{ reg.event.title }}" class="rounded-3 w-100" style="aspect-ratio: 16/10; object-fit: cover; border: 1px solid var(--border-subtle);">
-              </div>
+  <div class="tab-content" id="studentDashTabsContent">
+    <!-- TAB 1: PASSES & REGISTRATIONS -->
+    <div class="tab-pane fade show active" id="passes-content" role="tabpanel">
+      <div class="row g-4">
+        <!-- Passes List -->
+        <div class="col-lg-8">
+          <div class="d-flex flex-column gap-3 mb-4">
+            {% for reg in registrations %}
+              <div class="card rounded-4 p-3.5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+                <div class="row align-items-center g-3">
+                  <div class="col-md-3">
+                    <img src="{{ reg.event.display_poster }}" alt="{{ reg.event.title }}" class="rounded-3 w-100" style="aspect-ratio: 16/10; object-fit: cover; border: 1px solid var(--border-subtle);">
+                  </div>
 
-              <div class="col-md-6">
-                <div class="d-flex align-items-center gap-2 mb-1">
-                  <span class="badge rounded-pill small" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-body);">{{ reg.event.category }}</span>
-                  {% if reg.status == 'CONFIRMED' %}
-                    <span class="badge bg-success-subtle text-success border border-success-subtle small">Confirmed</span>
-                  {% else %}
-                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle small">Cancelled</span>
-                  {% endif %}
+                  <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      <span class="badge rounded-pill small" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-body);">{{ reg.event.category }}</span>
+                      {% if reg.status == 'CONFIRMED' %}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle small">Confirmed</span>
+                      {% else %}
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle small">Cancelled</span>
+                      {% endif %}
+                    </div>
+
+                    <h5 class="fw-bold mb-1 fs-6">
+                      <a href="{% url 'event_detail' reg.event.id %}" class="text-white text-decoration-none text-hover-primary">{{ reg.event.title }}</a>
+                    </h5>
+                    <div class="small text-muted mb-1"><i class="bi bi-building me-1 text-primary"></i> {{ reg.event.college.name }}</div>
+                    <div class="small text-muted"><i class="bi bi-calendar-event me-1 text-primary"></i> {{ reg.event.date|date:"M d, Y" }} &bull; {{ reg.event.venue }}</div>
+                    <div class="small text-muted mt-1 font-monospace">Pass ID: <strong class="text-primary">{{ reg.registration_id }}</strong></div>
+                  </div>
+
+                  <div class="col-md-3 text-md-end d-flex flex-md-column gap-2 justify-content-center">
+                    {% if reg.status == 'CONFIRMED' %}
+                      <button type="button" class="btn btn-outline-primary btn-sm rounded-pill fw-semibold" onclick="showRegistrationConfirmationModal({
+                        event_title: '{{ reg.event.title|escapejs }}',
+                        event_category: '{{ reg.event.category|escapejs }}',
+                        college_name: '{{ reg.event.college.name|escapejs }}',
+                        student_name: '{{ user.name|escapejs }}',
+                        student_college: '{{ user.college_display_name|escapejs }}',
+                        event_date: '{{ reg.event.date|date:'M d, Y' }}',
+                        event_venue: '{{ reg.event.venue|escapejs }}',
+                        event_city: '{{ reg.event.city|escapejs }}',
+                        registration_id: '{{ reg.registration_id }}'
+                      })">
+                        <i class="bi bi-qr-code me-1"></i> View Ticket
+                      </button>
+
+                      <form action="{% url 'cancel_registration' reg.id %}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this registration?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill w-100">
+                          Cancel Pass
+                        </button>
+                      </form>
+                    {% else %}
+                      <span class="badge bg-secondary text-white py-2">Cancelled</span>
+                    {% endif %}
+                  </div>
                 </div>
+              </div>
+            {% empty %}
+              <div class="empty-state">
+                <div class="empty-icon"><i class="bi bi-ticket-perforated"></i></div>
+                <h5 class="text-white">No Registrations Yet</h5>
+                <p class="text-muted small mb-3">You haven't registered for any events yet. Discover competitions and hackathons to showcase your skills!</p>
+                <a href="{% url 'events_discovery' %}" class="btn btn-primary-gradient btn-sm px-4">Browse Events</a>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
 
-                <h5 class="fw-bold mb-1 fs-6">
-                  <a href="{% url 'event_detail' reg.event.id %}" class="text-white text-decoration-none text-hover-primary">{{ reg.event.title }}</a>
-                </h5>
-                <div class="small text-muted mb-1"><i class="bi bi-building me-1 text-primary"></i> {{ reg.event.college.name }}</div>
-                <div class="small text-muted"><i class="bi bi-calendar-event me-1 text-primary"></i> {{ reg.event.date|date:"M d, Y" }} &bull; {{ reg.event.venue }}</div>
-                <div class="small text-muted mt-1 font-monospace">Pass ID: <strong class="text-primary">{{ reg.registration_id }}</strong></div>
+        <!-- Sidebar: Recommended for You -->
+        <div class="col-lg-4">
+          <div class="card rounded-4 p-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
+            <h5 class="fw-bold mb-3 text-white"><i class="bi bi-stars text-warning me-2"></i> Recommended for You</h5>
+            <div class="d-flex flex-column gap-3">
+              {% for rec in recommended_events %}
+                <div class="d-flex gap-3 align-items-center">
+                  <img src="{{ rec.display_poster }}" alt="{{ rec.title }}" class="rounded-3" width="70" height="50" style="object-fit: cover; border: 1px solid var(--border-subtle);">
+                  <div class="overflow-hidden flex-grow-1">
+                    <span class="badge rounded-pill small" style="font-size: 0.68rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-body);">{{ rec.category }}</span>
+                    <h6 class="fw-bold mb-0 text-truncate">
+                      <a href="{% url 'event_detail' rec.id %}" class="text-white text-decoration-none text-hover-primary">{{ rec.title }}</a>
+                    </h6>
+                    <div class="small text-muted" style="font-size: 0.75rem;">{{ rec.date|date:"M d" }} &bull; {{ rec.display_fee }}</div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SAVED EVENTS (WATCHLIST) -->
+    <div class="tab-pane fade" id="saved-content" role="tabpanel">
+      <div class="row g-4">
+        {% for item in saved_events %}
+          <div class="col-md-6 col-lg-4">
+            <div class="event-card position-relative h-100 d-flex flex-column">
+              <div class="event-poster-wrap position-relative">
+                <img src="{{ item.event.display_poster }}" alt="{{ item.event.title }}" class="event-poster-img" loading="lazy">
+                <span class="event-badge-category badge-cat-{{ item.event.category|slice:':6' }}">{{ item.event.category }}</span>
+                <span class="badge-fee {% if item.event.is_free %}bg-success text-white{% else %}bg-dark text-white{% endif %}">
+                  {{ item.event.display_fee }}
+                </span>
+                <a href="{% url 'toggle_save_event' item.event.id %}" class="event-save-btn is-saved" title="Remove from Watchlist">
+                  <i class="bi bi-heart-fill"></i>
+                </a>
               </div>
 
-              <div class="col-md-3 text-md-end d-flex flex-md-column gap-2 justify-content-center">
-                {% if reg.status == 'CONFIRMED' %}
-                  <button type="button" class="btn btn-outline-primary btn-sm rounded-pill fw-semibold" onclick="showRegistrationConfirmationModal({
-                    event_title: '{{ reg.event.title|escapejs }}',
-                    event_category: '{{ reg.event.category|escapejs }}',
-                    college_name: '{{ reg.event.college.name|escapejs }}',
-                    student_name: '{{ user.name|escapejs }}',
-                    student_college: '{{ user.college_display_name|escapejs }}',
-                    event_date: '{{ reg.event.date|date:'M d, Y' }}',
-                    event_venue: '{{ reg.event.venue|escapejs }}',
-                    event_city: '{{ reg.event.city|escapejs }}',
-                    registration_id: '{{ reg.registration_id }}'
-                  })">
-                    <i class="bi bi-qr-code me-1"></i> View Ticket
-                  </button>
+              <div class="p-3.5 d-flex flex-column flex-grow-1">
+                <div class="d-flex align-items-center gap-2 mb-1 text-muted small">
+                  <i class="bi bi-building text-primary"></i>
+                  <span class="text-truncate">{{ item.event.college.name }}</span>
+                </div>
+                <h6 class="fw-bold mb-2">
+                  <a href="{% url 'event_detail' item.event.id %}" class="text-white text-decoration-none text-hover-primary">
+                    {{ item.event.title }}
+                  </a>
+                </h6>
+                <div class="small text-muted mb-3"><i class="bi bi-calendar me-1"></i> {{ item.event.date|date:"M d, Y" }} &bull; {{ item.event.city }}</div>
 
-                  <form action="{% url 'cancel_registration' reg.id %}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this registration?');">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill w-100">
-                      Cancel Pass
-                    </button>
-                  </form>
-                {% else %}
-                  <span class="badge bg-secondary text-white py-2">Cancelled</span>
-                {% endif %}
+                <div class="mt-auto pt-2 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                  <span class="small text-muted">{{ item.event.spots_left }} spots left</span>
+                  <a href="{% url 'event_detail' item.event.id %}" class="btn btn-sm btn-primary-gradient rounded-pill px-3">
+                    View & Register
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         {% empty %}
-          <div class="empty-state">
-            <div class="empty-icon"><i class="bi bi-ticket-perforated"></i></div>
-            <h5 class="text-white">No Registrations Yet</h5>
-            <p class="text-muted small mb-3">You haven't registered for any events yet. Discover competitions and hackathons to showcase your skills!</p>
-            <a href="{% url 'events_discovery' %}" class="btn btn-primary-gradient btn-sm px-4">Browse Events</a>
+          <div class="col-12">
+            <div class="empty-state text-center py-5">
+              <i class="bi bi-heart fs-1 text-muted mb-2 d-block"></i>
+              <h5 class="text-white">No Saved Events Yet</h5>
+              <p class="text-muted small mb-3">Click the heart icon on any event card to save it here for quick access!</p>
+              <a href="{% url 'events_discovery' %}" class="btn btn-outline-primary rounded-pill px-4">Explore Events</a>
+            </div>
           </div>
         {% endfor %}
       </div>
     </div>
 
-    <!-- Recommended for You Sidebar -->
-    <div class="col-lg-4">
-      <div class="card rounded-4 p-4" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow);">
-        <h5 class="fw-bold mb-3 text-white"><i class="bi bi-stars text-warning me-2"></i> Recommended for You</h5>
-        <div class="d-flex flex-column gap-3">
-          {% for rec in recommended_events %}
-            <div class="d-flex gap-3 align-items-center">
-              <img src="{{ rec.display_poster }}" alt="{{ rec.title }}" class="rounded-3" width="70" height="50" style="object-fit: cover; border: 1px solid var(--border-subtle);">
-              <div class="overflow-hidden flex-grow-1">
-                <span class="badge rounded-pill small" style="font-size: 0.68rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-body);">{{ rec.category }}</span>
-                <h6 class="fw-bold mb-0 text-truncate">
-                  <a href="{% url 'event_detail' rec.id %}" class="text-white text-decoration-none text-hover-primary">{{ rec.title }}</a>
-                </h6>
-                <div class="small text-muted" style="font-size: 0.75rem;">{{ rec.date|date:"M d" }} &bull; {{ rec.display_fee }}</div>
-              </div>
+    <!-- TAB 3: STUDENT PROFILE -->
+    <div class="tab-pane fade" id="profile-content" role="tabpanel">
+      <div class="card rounded-4 p-4 p-md-5" style="background: var(--bg-card); border: 1px solid var(--border-medium); box-shadow: var(--card-shadow); max-width: 800px;">
+        <h5 class="fw-bold text-white mb-1"><i class="bi bi-person-gear text-primary me-2"></i> Manage Student Profile</h5>
+        <p class="text-muted small mb-4">Keep your university credentials, department, and social links up to date.</p>
+
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_profile">
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small text-muted text-uppercase fw-bold">Full Name</label>
+              <input type="text" name="name" class="form-control text-white" style="background: var(--bg-surface); border-color: var(--border-medium);" value="{{ user.name }}" required>
             </div>
-          {% endfor %}
-        </div>
+            <div class="col-md-6">
+              <label class="form-label small text-muted text-uppercase fw-bold">Phone Number</label>
+              <input type="text" name="phone" class="form-control text-white" style="background: var(--bg-surface); border-color: var(--border-medium);" value="{{ user.phone }}">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small text-muted text-uppercase fw-bold">Department / Major</label>
+              <input type="text" name="department" class="form-control text-white" style="background: var(--bg-surface); border-color: var(--border-medium);" placeholder="e.g. Computer Science & Engineering" value="{{ profile.department }}">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted text-uppercase fw-bold">Year of Study</label>
+              <select name="year_of_study" class="form-select text-white" style="background: var(--bg-surface); border-color: var(--border-medium);">
+                <option value="" {% if not profile.year_of_study %}selected{% endif %}>Select Year</option>
+                <option value="1st Year" {% if profile.year_of_study == '1st Year' %}selected{% endif %}>1st Year</option>
+                <option value="2nd Year" {% if profile.year_of_study == '2nd Year' %}selected{% endif %}>2nd Year</option>
+                <option value="3rd Year" {% if profile.year_of_study == '3rd Year' %}selected{% endif %}>3rd Year</option>
+                <option value="4th Year" {% if profile.year_of_study == '4th Year' %}selected{% endif %}>4th Year</option>
+                <option value="Postgraduate" {% if profile.year_of_study == 'Postgraduate' %}selected{% endif %}>Postgraduate</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label small text-muted text-uppercase fw-bold">Roll / Reg Number</label>
+              <input type="text" name="roll_number" class="form-control text-white" style="background: var(--bg-surface); border-color: var(--border-medium);" placeholder="e.g. 21CS042" value="{{ profile.roll_number }}">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-muted text-uppercase fw-bold">Skills & Interests</label>
+            <input type="text" name="skills" class="form-control text-white" style="background: var(--bg-surface); border-color: var(--border-medium);" placeholder="e.g. Python, AI/ML, React, Cloud Computing, UI/UX" value="{{ profile.skills }}">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-muted text-uppercase fw-bold">Bio</label>
+            <textarea name="bio" class="form-control text-white" rows="3" style="background: var(--bg-surface); border-color: var(--border-medium);" placeholder="Brief intro about your collegiate aspirations...">{{ profile.bio }}</textarea>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small text-muted text-uppercase fw-bold"><i class="bi bi-github me-1"></i> GitHub URL</label>
+              <input type="url" name="github_url" class="form-control text-white" style="background: var(--bg-surface); border-color: var(--border-medium);" placeholder="https://github.com/username" value="{{ profile.github_url }}">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small text-muted text-uppercase fw-bold"><i class="bi bi-linkedin me-1"></i> LinkedIn URL</label>
+              <input type="url" name="linkedin_url" class="form-control text-white" style="background: var(--bg-surface); border-color: var(--border-medium);" placeholder="https://linkedin.com/in/username" value="{{ profile.linkedin_url }}">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary-gradient px-4 py-2 rounded-pill fw-bold">
+            <i class="bi bi-check2-circle me-1"></i> Save Profile Details
+          </button>
+        </form>
       </div>
     </div>
   </div>

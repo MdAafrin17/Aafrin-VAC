@@ -22,22 +22,16 @@
 </head>
 <body>
 
-  <!-- Interactive 3D WebGL Graphic Scene (Floating Polyhedra, Wave Grid & Constellation) -->
-  <canvas id="bg3dCanvas" class="bg-3d-canvas" aria-hidden="true"></canvas>
-
-  <!-- Ambient Animated Aurora Background Lights -->
-  <div class="aurora-container" aria-hidden="true">
-    <div class="aurora-orb orb-purple"></div>
-    <div class="aurora-orb orb-cyan"></div>
-    <div class="aurora-orb orb-magenta"></div>
-  </div>
 
   <!-- Floating 3D Glass Navigation Bar -->
   <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3" id="mainNavbar">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
         <span class="brand-glyph-3d">◈</span>
-        <span class="fs-4 brand-font brand-gradient fw-bold">CampusConnect</span>
+        <div class="brand-text-stacked lh-1">
+          <span class="brand-title-top">CAMPUS</span>
+          <span class="brand-title-bottom">CONNECT</span>
+        </div>
       </a>
 
       <button class="navbar-toggler border-0 shadow-none text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,22 +45,65 @@
           </li>
           <li class="nav-item">
             <a class="nav-link fw-semibold px-3 {% if request.resolver_match.url_name == 'events_discovery' %}active text-primary{% endif %}" href="{% url 'events_discovery' %}">
-              Explore <span class="badge bg-primary-subtle text-primary rounded-pill ms-1">{{ all_events_count }}</span>
+              Explore Events <span class="badge bg-primary-subtle text-cyan rounded-pill ms-1">{{ all_events_count|default:"Live" }}</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link fw-semibold px-3" href="{% url 'home' %}#colleges">Colleges</a>
+            <a class="nav-link fw-semibold px-3 {% if request.resolver_match.url_name == 'colleges_list' or request.resolver_match.url_name == 'college_detail' %}active text-primary{% endif %}" href="{% url 'colleges_list' %}">Colleges</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold px-3 {% if request.resolver_match.url_name == 'event_create' %}active text-primary{% endif %}" href="{% if user.is_authenticated and user.is_college_admin %}{% url 'event_create' %}{% elif user.is_authenticated %}{% url 'college_register' %}{% else %}{% url 'event_create' %}{% endif %}">
+              <i class="bi bi-plus-circle me-1 text-cyan"></i> Post Event
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold px-3 {% if request.resolver_match.url_name == 'my_registrations' %}active text-primary{% endif %}" href="{% if user.is_authenticated %}{% if user.is_college_admin %}{% url 'college_dashboard' %}{% else %}{% url 'my_registrations' %}{% endif %}{% else %}{% url 'login' %}?next={% url 'my_registrations' %}{% endif %}">
+              My Events
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-semibold px-3 {% if request.resolver_match.url_name == 'student_dashboard' or request.resolver_match.url_name == 'college_dashboard' %}active text-primary{% endif %}" href="{% if user.is_authenticated %}{% if user.is_college_admin %}{% url 'college_dashboard' %}{% else %}{% url 'student_dashboard' %}{% endif %}{% else %}{% url 'login' %}{% endif %}">
+              Profile
+            </a>
           </li>
           <li class="nav-item">
             <a class="nav-link fw-semibold px-3 {% if request.resolver_match.url_name == 'about' %}active text-primary{% endif %}" href="{% url 'about' %}">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fw-semibold px-3 {% if request.resolver_match.url_name == 'contact' %}active text-primary{% endif %}" href="{% url 'contact' %}">Contact</a>
           </li>
         </ul>
 
         <div class="d-flex align-items-center gap-2 flex-wrap">
           {% if user.is_authenticated %}
+            <!-- Notifications Dropdown -->
+            <div class="dropdown">
+              <button class="btn btn-dark border border-white-15 rounded-circle p-2 position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications" style="width: 38px; height: 38px;">
+                <i class="bi bi-bell-fill text-muted"></i>
+                {% if unread_notifications_count > 0 %}
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-dark" style="font-size: 0.65rem;">
+                    {{ unread_notifications_count }}
+                  </span>
+                {% endif %}
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-2 p-2" style="min-width: 280px; max-width: 320px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.12) !important;">
+                <li class="d-flex justify-content-between align-items-center px-2 py-1 mb-1 border-bottom border-secondary border-opacity-25">
+                  <span class="fw-bold small text-white"><i class="bi bi-bell me-1 text-primary"></i> Notifications</span>
+                  <span class="badge bg-primary-subtle text-primary small">{{ unread_notifications_count }} unread</span>
+                </li>
+                {% for notif in user_notifications %}
+                  <li>
+                    <a class="dropdown-item rounded-2 py-2 px-2 text-wrap {% if not notif.is_read %}bg-primary-subtle bg-opacity-25{% endif %}" href="{% url 'mark_notification_read' notif.id %}">
+                      <div class="fw-semibold small text-white mb-0.5">{{ notif.title }}</div>
+                      <div class="small text-muted text-truncate" style="font-size: 0.76rem;">{{ notif.message }}</div>
+                      <div class="text-secondary small mt-0.5" style="font-size: 0.7rem;">{{ notif.created_at|timesince }} ago</div>
+                    </a>
+                  </li>
+                {% empty %}
+                  <li class="text-center py-3 text-muted small">
+                    <i class="bi bi-bell-slash d-block mb-1"></i> No new notifications
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+
             {% if user.is_college_admin %}
               <a href="{% url 'event_create' %}" class="btn btn-outline-primary fw-semibold btn-sm px-3 rounded-pill">
                 <i class="bi bi-plus-circle me-1"></i> Host Event
@@ -75,7 +112,7 @@
                 <button class="btn btn-dark border border-white-15 dropdown-toggle d-flex align-items-center gap-2 rounded-pill px-3 py-1.5" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <img src="{{ user.display_avatar }}" alt="{{ user.name }}" class="rounded-circle" width="28" height="28">
                   <span class="fw-semibold small text-white">{{ user.name }}</span>
-                  <span class="badge bg-purple-subtle text-purple border border-purple-subtle" style="font-size: 0.68rem; background-color: rgba(147, 51, 234, 0.2); color: #c084fc;">College Admin</span>
+                  <span class="badge bg-purple-subtle text-purple border border-purple-subtle" style="font-size: 0.68rem; background-color: rgba(147, 51, 234, 0.2); color: #c084fc;">Admin</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-2">
                   <li><h6 class="dropdown-header text-uppercase small">{{ user.college_display_name }}</h6></li>
@@ -87,7 +124,7 @@
               </div>
             {% else %}
               <a href="{% url 'my_registrations' %}" class="btn btn-outline-custom btn-sm px-3 rounded-pill position-relative">
-                <i class="bi bi-ticket-perforated me-1 text-primary"></i> My Passes
+                <i class="bi bi-ticket-perforated me-1 text-primary"></i> Passes
                 {% if my_confirmed_count %}
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
                     {{ my_confirmed_count }}
@@ -102,6 +139,7 @@
                 <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-2">
                   <li><h6 class="dropdown-header text-uppercase small">{{ user.college_display_name }}</h6></li>
                   <li><a class="dropdown-item py-2" href="{% url 'student_dashboard' %}"><i class="bi bi-person-badge me-2 text-primary"></i> Student Dashboard</a></li>
+                  <li><a class="dropdown-item py-2" href="{% url 'student_dashboard' %}#savedTab"><i class="bi bi-heart-fill me-2 text-danger"></i> Saved Events</a></li>
                   <li><a class="dropdown-item py-2" href="{% url 'my_registrations' %}"><i class="bi bi-ticket-detailed me-2 text-indigo"></i> My Registrations</a></li>
                   <li><a class="dropdown-item py-2" href="{% url 'events_discovery' %}"><i class="bi bi-compass me-2 text-success"></i> Discover Events</a></li>
                   <li><hr class="dropdown-divider"></li>
@@ -110,17 +148,17 @@
               </div>
             {% endif %}
           {% else %}
-            <!-- Unauthenticated Nav Actions -->
-            <a href="{% url 'login' %}" class="btn btn-outline-custom btn-sm px-3 rounded-pill">
-              <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            <!-- Unauthenticated Nav Actions: Login + Get Started -->
+            <a href="{% url 'login' %}" class="btn btn-outline-custom btn-sm px-3.5 rounded-pill fw-semibold">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Login
             </a>
             <div class="dropdown">
-              <button class="btn btn-primary-gradient btn-sm px-3 dropdown-toggle rounded-pill shadow-sm" type="button" data-bs-toggle="dropdown">
-                Register
+              <button class="btn btn-primary-gradient btn-sm px-3.5 py-1.5 dropdown-toggle rounded-pill shadow-sm fw-bold" type="button" data-bs-toggle="dropdown">
+                Get Started
               </button>
               <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-2">
-                <li><a class="dropdown-item py-2" href="{% url 'student_register' %}"><i class="bi bi-person-plus me-2 text-primary"></i> Register as Student</a></li>
-                <li><a class="dropdown-item py-2" href="{% url 'college_register' %}"><i class="bi bi-building-add me-2 text-indigo"></i> Register as College Admin</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'student_register' %}"><i class="bi bi-person-plus me-2 text-primary"></i> Join as Student</a></li>
+                <li><a class="dropdown-item py-2" href="{% url 'college_register' %}"><i class="bi bi-building-add me-2 text-info"></i> Host as College Admin</a></li>
               </ul>
             </div>
           {% endif %}
@@ -155,57 +193,66 @@
   </main>
 
   <!-- Footer -->
-  <footer class="pt-5 pb-4 mt-5">
+  <footer class="pt-5 pb-4 mt-5 border-top border-subtle">
     <div class="container">
       <div class="row g-4 mb-4">
+        <!-- Brand & Tagline Column -->
         <div class="col-lg-4 col-md-6">
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-3" style="width: 34px; height: 34px;">
-              <i class="bi bi-mortarboard-fill"></i>
-            </div>
-            <span class="fs-4 brand-font text-white">CampusConnect</span>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="brand-glyph-3d">◈</span>
+            <span class="fs-4 brand-font text-white fw-bold">CAMPUSCONNECT</span>
+          </div>
+          <div class="footer-tagline-quote mb-3 text-cyan fw-medium" style="line-height: 1.5; font-size: 0.95rem;">
+            "Connecting students.<br>
+            Connecting colleges.<br>
+            Connecting opportunities."
           </div>
           <p class="small text-secondary mb-3">
-            India's unified college event discovery and registration platform. Empowering students to compete, innovate, and network across top institutions.
+            The next-generation inter-collegiate event discovery & participation platform for universities and technical institutions nationwide.
           </p>
           <div class="d-flex gap-3 fs-5">
-            <a href="#" class="text-secondary"><i class="bi bi-twitter-x"></i></a>
-            <a href="#" class="text-secondary"><i class="bi bi-linkedin"></i></a>
-            <a href="#" class="text-secondary"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="text-secondary"><i class="bi bi-github"></i></a>
+            <a href="#" class="text-secondary text-hover-primary" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="text-secondary text-hover-primary" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+            <a href="#" class="text-secondary text-hover-primary" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="text-secondary text-hover-primary" aria-label="GitHub"><i class="bi bi-github"></i></a>
+            <a href="#" class="text-secondary text-hover-primary" aria-label="Discord"><i class="bi bi-discord"></i></a>
           </div>
         </div>
 
+        <!-- Explore Links -->
         <div class="col-lg-2 col-md-3 col-6">
-          <h6 class="text-white fw-bold mb-3">Explore</h6>
-          <ul class="list-unstyled small d-flex flex-column gap-2">
+          <h6 class="text-white fw-bold mb-3 text-uppercase small tracking-wider">Explore</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2 footer-links-list">
+            <li><a href="{% url 'events_discovery' %}">Explore Events</a></li>
             <li><a href="{% url 'events_discovery' %}?category=Hackathon">Hackathons</a></li>
             <li><a href="{% url 'events_discovery' %}?category=Symposium">Symposiums</a></li>
             <li><a href="{% url 'events_discovery' %}?category=Workshop">Workshops</a></li>
             <li><a href="{% url 'events_discovery' %}?category=Cultural">Cultural Fests</a></li>
             <li><a href="{% url 'events_discovery' %}?category=Sports">Sports Meets</a></li>
-            <li><a href="{% url 'events_discovery' %}?category=Gaming">Esports Tourneys</a></li>
           </ul>
         </div>
 
+        <!-- Quick Links -->
         <div class="col-lg-2 col-md-3 col-6">
-          <h6 class="text-white fw-bold mb-3">Quick Links</h6>
-          <ul class="list-unstyled small d-flex flex-column gap-2">
-            <li><a href="{% url 'events_discovery' %}">All Events</a></li>
-            <li><a href="{% url 'about' %}">About Us</a></li>
-            <li><a href="{% url 'contact' %}">Contact & Support</a></li>
-            <li><a href="{% url 'college_register' %}">Host an Event</a></li>
-            <li><a href="/api/events/">REST API</a></li>
+          <h6 class="text-white fw-bold mb-3 text-uppercase small tracking-wider">Platform</h6>
+          <ul class="list-unstyled small d-flex flex-column gap-2 footer-links-list">
+            <li><a href="{% url 'events_discovery' %}">Explore Events</a></li>
+            <li><a href="{% url 'college_register' %}">Host Event</a></li>
+            <li><a href="{% url 'colleges_list' %}">Colleges</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+            <li><a href="/api/events/">REST APIs</a></li>
           </ul>
         </div>
 
+        <!-- College Host Column -->
         <div class="col-lg-4 col-md-6">
-          <h6 class="text-white fw-bold mb-3">For Colleges & Organizers</h6>
+          <h6 class="text-white fw-bold mb-3 text-uppercase small tracking-wider">For College Organizers</h6>
           <p class="small text-secondary mb-3">
             Publish your inter-collegiate events, manage real-time registrations, export attendee rosters, and reach over 100,000+ passionate students across India.
           </p>
-          <a href="{% url 'college_register' %}" class="btn btn-primary-gradient btn-sm px-4">
-            <i class="bi bi-rocket-takeoff me-1"></i> Register Your College
+          <a href="{% url 'college_register' %}" class="btn btn-primary-gradient btn-sm px-4 rounded-pill fw-semibold">
+            <i class="bi bi-rocket-takeoff me-1"></i> Host an Event
           </a>
         </div>
       </div>
@@ -213,29 +260,23 @@
       <hr class="border-secondary opacity-25">
 
       <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 pt-2 small text-secondary">
-        <div>&copy; 2026 CampusConnect Platform. Designed for modern college communities across India.</div>
+        <div>&copy; 2026 <strong>CampusConnect</strong>. All rights reserved. Connect. Discover. Participate.</div>
         <div class="d-flex gap-3">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Security</a>
+          <a href="{% url 'about' %}#privacy">Privacy Policy</a>
+          <a href="{% url 'about' %}#terms">Terms</a>
+          <a href="{% url 'contact' %}">Contact</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Floating 3D FX Status Pill -->
-  <div class="fx-3d-pill d-none d-md-flex" id="fx3dPill" title="Interactive 3D Campus Hologram Active">
-    <span class="fx-3d-pulse"></span>
-    <span class="fx-3d-label"><i class="bi bi-buildings-fill me-1 text-info"></i> 3D Campus Hologram Active</span>
-  </div>
 
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;"></div>
 
-  <!-- Three.js 3D Graphics Engine -->
-  <script src="/static/js/three.min.js"></script>
-  <!-- 3D Cinematic Scene Script -->
-  <script src="/static/js/bg-3d.js"></script>
+  <!-- GSAP & ScrollTrigger Animation Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <!-- Bootstrap 5.3 Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Main Script -->
@@ -270,6 +311,25 @@
             localStorage.setItem('campusconnect_theme', nextTheme);
             updateThemeIcon(nextTheme);
           });
+        }
+
+        // Navbar Dynamic Glass & Transparency on Scroll
+        const mainNav = document.getElementById('mainNavbar');
+        if (mainNav) {
+          const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
+          function handleNavScroll() {
+            if (window.scrollY > 40) {
+              mainNav.classList.add('navbar-scrolled');
+              mainNav.classList.remove('navbar-transparent-hero');
+            } else {
+              mainNav.classList.remove('navbar-scrolled');
+              if (isHomePage) {
+                mainNav.classList.add('navbar-transparent-hero');
+              }
+            }
+          }
+          window.addEventListener('scroll', handleNavScroll, { passive: true });
+          handleNavScroll();
         }
       });
     })();
