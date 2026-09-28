@@ -84,17 +84,17 @@
 
               <div class="d-flex gap-2">
                 {% if reg.status == 'CONFIRMED' %}
-                  <button type="button" class="btn btn-primary-gradient btn-sm rounded-pill px-3" onclick="showRegistrationConfirmationModal({
-                    event_title: '{{ reg.event.title|escapejs }}',
-                    event_category: '{{ reg.event.category|escapejs }}',
-                    college_name: '{{ reg.event.college.name|escapejs }}',
-                    student_name: '{{ reg.student.name|escapejs }}',
-                    student_college: '{{ reg.student.college_display_name|escapejs }}',
-                    event_date: '{{ reg.event.date|date:'M d, Y' }}',
-                    event_venue: '{{ reg.event.venue|escapejs }}',
-                    event_city: '{{ reg.event.city|escapejs }}',
-                    registration_id: '{{ reg.registration_id }}'
-                  })">
+                  <button type="button" class="btn btn-primary-gradient btn-sm rounded-pill px-3"
+                    data-event-title="{{ reg.event.title }}"
+                    data-event-category="{{ reg.event.category }}"
+                    data-college-name="{{ reg.event.college.name }}"
+                    data-student-name="{{ reg.student.name }}"
+                    data-student-college="{{ reg.student.college_display_name }}"
+                    data-event-date="{{ reg.event.date|date:'M d, Y' }}"
+                    data-event-venue="{{ reg.event.venue }}"
+                    data-event-city="{{ reg.event.city }}"
+                    data-registration-id="{{ reg.registration_id }}"
+                    onclick="showTicketFromElement(this)">
                     <i class="bi bi-printer me-1"></i> Print Pass
                   </button>
 
@@ -126,4 +126,24 @@
     {% endfor %}
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showTicketFromElement(btn) {
+  if (typeof showRegistrationConfirmationModal === 'function') {
+    showRegistrationConfirmationModal({
+      event_title: btn.dataset.eventTitle || '',
+      event_category: btn.dataset.eventCategory || '',
+      college_name: btn.dataset.collegeName || '',
+      student_name: btn.dataset.studentName || '',
+      student_college: btn.dataset.studentCollege || '',
+      event_date: btn.dataset.eventDate || '',
+      event_venue: btn.dataset.eventVenue || '',
+      event_city: btn.dataset.eventCity || '',
+      registration_id: btn.dataset.registrationId || ''
+    });
+  }
+}
+</script>
 {% endblock %}

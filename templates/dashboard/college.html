@@ -164,7 +164,7 @@
                       <span class="text-muted small">/ {{ ev.max_participants }}</span>
                     </div>
                     <div class="progress" style="height: 4px; width: 80px;">
-                      <div class="progress-bar bg-primary" role="progressbar" style="width: {{ ev.fill_percentage }}%;"></div>
+                      <div class="progress-bar bg-primary" role="progressbar" data-progress="{{ ev.fill_percentage }}"></div>
                     </div>
                   </td>
                   <td class="small fw-semibold text-white">
@@ -177,7 +177,7 @@
                       </button>
                       <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3">
                         <li><a class="dropdown-item py-1.5" href="{% url 'event_detail' ev.id %}"><i class="bi bi-eye me-2 text-primary"></i> View Page</a></li>
-                        <li><a class="dropdown-item py-1.5" href="#" onclick="openParticipantsModal({{ ev.id }}, '{{ ev.title|escapejs }}')"><i class="bi bi-people me-2 text-info"></i> View Participants</a></li>
+                        <li><a class="dropdown-item py-1.5" href="#" data-event-id="{{ ev.id }}" data-event-title="{{ ev.title }}" onclick="openParticipantsModalFromBtn(this)"><i class="bi bi-people me-2 text-info"></i> View Participants</a></li>
                         <li><a class="dropdown-item py-1.5" href="{% url 'event_export_csv' ev.id %}"><i class="bi bi-file-earmark-arrow-down me-2 text-success"></i> Export CSV</a></li>
                         <li><a class="dropdown-item py-1.5" href="{% url 'event_edit' ev.id %}"><i class="bi bi-pencil me-2 text-warning"></i> Edit Details</a></li>
                         <li><hr class="dropdown-divider" style="border-color: var(--border-subtle);"></li>
@@ -306,16 +306,37 @@ async function openParticipantsModal(eventId, eventTitle) {
     bodyEl.innerHTML = '<div class="alert alert-danger">An error occurred while loading participants.</div>';
   }
 }
+
+function openParticipantsModalFromBtn(btn) {
+  if (btn && btn.dataset) {
+    openParticipantsModal(btn.dataset.eventId, btn.dataset.eventTitle || '');
+  }
+}
 </script>
+
+{{ event_chart_labels|default:"[]"|json_script:"eventChartLabels" }}
+{{ event_chart_regs|default:"[]"|json_script:"eventChartRegs" }}
+{{ event_chart_capacity|default:"[]"|json_script:"eventChartCapacity" }}
+{{ cat_labels|default:"[]"|json_script:"catLabelsData" }}
+{{ cat_data|default:"[]"|json_script:"catCountsData" }}
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  // Populate progress bars
+  document.querySelectorAll('[data-progress]').forEach(el => {
+    el.style.width = (el.dataset.progress || 0) + '%';
+  });
+
   // Chart 1: Bar chart comparing registrations vs capacity
   const barCanvas = document.getElementById('eventCapacityChart');
   if (barCanvas) {
-    const labels = {{ event_chart_labels|safe|default:"[]" }};
-    const regs = {{ event_chart_regs|safe|default:"[]" }};
-    const caps = {{ event_chart_capacity|safe|default:"[]" }};
+    const labelsEl = document.getElementById('eventChartLabels');
+    const regsEl = document.getElementById('eventChartRegs');
+    const capsEl = document.getElementById('eventChartCapacity');
+    const labels = labelsEl ? JSON.parse(labelsEl.textContent) : [];
+    const regs = regsEl ? JSON.parse(regsEl.textContent) : [];
+    const caps = capsEl ? JSON.parse(capsEl.textContent) : [];
 
     new Chart(barCanvas, {
       type: 'bar',
@@ -366,8 +387,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Chart 2: Category breakdown doughnut chart
   const pieCanvas = document.getElementById('categoryDistributionChart');
   if (pieCanvas) {
-    const catLabels = {{ cat_labels|safe|default:"[]" }};
-    const catData = {{ cat_data|safe|default:"[]" }};
+    const catLabelsEl = document.getElementById('catLabelsData');
+    const catDataEl = document.getElementById('catCountsData');
+    const catLabels = catLabelsEl ? JSON.parse(catLabelsEl.textContent) : [];
+    const catData = catDataEl ? JSON.parse(catDataEl.textContent) : [];
 
     new Chart(pieCanvas, {
       type: 'doughnut',
@@ -402,4 +425,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
+
 {% endblock %}

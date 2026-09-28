@@ -115,17 +115,17 @@
 
                   <div class="col-md-3 text-md-end d-flex flex-md-column gap-2 justify-content-center">
                     {% if reg.status == 'CONFIRMED' %}
-                      <button type="button" class="btn btn-outline-primary btn-sm rounded-pill fw-semibold" onclick="showRegistrationConfirmationModal({
-                        event_title: '{{ reg.event.title|escapejs }}',
-                        event_category: '{{ reg.event.category|escapejs }}',
-                        college_name: '{{ reg.event.college.name|escapejs }}',
-                        student_name: '{{ user.name|escapejs }}',
-                        student_college: '{{ user.college_display_name|escapejs }}',
-                        event_date: '{{ reg.event.date|date:'M d, Y' }}',
-                        event_venue: '{{ reg.event.venue|escapejs }}',
-                        event_city: '{{ reg.event.city|escapejs }}',
-                        registration_id: '{{ reg.registration_id }}'
-                      })">
+                      <button type="button" class="btn btn-outline-primary btn-sm rounded-pill fw-semibold"
+                        data-event-title="{{ reg.event.title }}"
+                        data-event-category="{{ reg.event.category }}"
+                        data-college-name="{{ reg.event.college.name }}"
+                        data-student-name="{{ user.name }}"
+                        data-student-college="{{ user.college_display_name }}"
+                        data-event-date="{{ reg.event.date|date:'M d, Y' }}"
+                        data-event-venue="{{ reg.event.venue }}"
+                        data-event-city="{{ reg.event.city }}"
+                        data-registration-id="{{ reg.registration_id }}"
+                        onclick="showTicketFromElement(this)">
                         <i class="bi bi-qr-code me-1"></i> View Ticket
                       </button>
 
@@ -298,4 +298,24 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showTicketFromElement(btn) {
+  if (typeof showRegistrationConfirmationModal === 'function') {
+    showRegistrationConfirmationModal({
+      event_title: btn.dataset.eventTitle || '',
+      event_category: btn.dataset.eventCategory || '',
+      college_name: btn.dataset.collegeName || '',
+      student_name: btn.dataset.studentName || '',
+      student_college: btn.dataset.studentCollege || '',
+      event_date: btn.dataset.eventDate || '',
+      event_venue: btn.dataset.eventVenue || '',
+      event_city: btn.dataset.eventCity || '',
+      registration_id: btn.dataset.registrationId || ''
+    });
+  }
+}
+</script>
 {% endblock %}
