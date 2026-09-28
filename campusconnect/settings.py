@@ -23,9 +23,11 @@ ALLOWED_HOSTS = [host.strip() for host in os.getenv('ALLOWED_HOSTS', '*').split(
 CSRF_TRUSTED_ORIGINS = [
     origin.strip() for origin in os.getenv(
         'CSRF_TRUSTED_ORIGINS',
-        'https://*.onrender.com,https://*.railway.app,https://*.up.railway.app,http://localhost:8000,http://127.0.0.1:8000'
+        'https://*.vercel.app,https://*.onrender.com,https://*.railway.app,https://*.up.railway.app,http://localhost:8000,http://127.0.0.1:8000'
     ).split(',') if origin.strip()
 ]
+if 'https://*.vercel.app' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app')
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -82,10 +84,27 @@ if DATABASE_URL:
         'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
     }
 else:
+    sqlite_path = BASE_DIR / 'db.sqlite3'
+    # On Vercel serverless runtime, root filesystem is read-only.
+    # Copy initial database to writable /tmp directory if deployed on Vercel.
+    if os.getenv('VERCEL') == '1':
+        import shutil
+        tmp_db = Path('/tmp') / 'db.sqlite3'
+        seed_db = BASE_DIR / 'campusconnect' / 'initial_db.sqlite3'
+        if not tmp_db.exists():
+            source = seed_db if seed_db.exists() else (sqlite_path if sqlite_path.exists() else None)
+            if source:
+                try:
+                    shutil.copy2(source, tmp_db)
+                except Exception:
+                    pass
+        if tmp_db.exists():
+            sqlite_path = tmp_db
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': sqlite_path,
         }
     }
 

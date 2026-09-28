@@ -194,6 +194,20 @@ The repository includes complete production-ready deployment configurations:
    - **Start Command:** `gunicorn campusconnect.wsgi:application --bind 0.0.0.0:$PORT`
 3. Configure Environment Variables (`SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `DATABASE_URL`).
 
+### Deploying to Vercel
+CampusConnect is fully configured for serverless deployment on [Vercel](https://vercel.com):
+1. **Push your code to GitHub** (`git push origin main`).
+2. Log in to [Vercel](https://vercel.com) and click **"Add New Project"** -> **"Import"** your `Campus-connect` repository.
+3. In **Project Settings**:
+   - **Framework Preset**: Other (Vercel automatically detects `vercel.json` and `.python-version`)
+   - **Root Directory**: `./` (leave default)
+4. Under **Environment Variables**, add:
+   - `SECRET_KEY`: A strong random string (e.g. `your-random-secret-key-32-chars-or-more`)
+   - `DEBUG`: `False` (or `True` for testing)
+   - `ALLOWED_HOSTS`: `*`
+   - `DATABASE_URL` *(Optional for persistent Postgres)*: Connection string from [Neon](https://neon.tech), [Supabase](https://supabase.com), or [Aiven](https://aiven.io) (format: `postgresql://user:password@host/dbname?sslmode=require`)
+5. Click **"Deploy"**. Vercel will run `build_files.sh`, collect static assets, and deploy the WSGI application with global CDN routing.
+
 ### Deploying with Docker
 ```bash
 docker compose up -d --build
